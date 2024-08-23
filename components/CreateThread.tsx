@@ -25,6 +25,7 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
       category: 'THREAD',
       comments: [],
       username: user.username || `${user.firstName} ${user.lastName}`,
+      isLocked: false,
     }
 
     const existingThreads = JSON.parse(localStorage.getItem('threads') || '[]')

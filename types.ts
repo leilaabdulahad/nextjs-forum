@@ -16,4 +16,5 @@ export type Thread = {
   description: string;
   comments: Comment[]; 
   username: string; 
+  isLocked: boolean;
 }

@@ -1,21 +1,24 @@
-'use client'
-import React, { useState } from 'react'
-import { Comment } from '../types'
-import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+// CreateComment.tsx
+'use client';
+
+import React, { useState } from 'react';
+import { Comment } from '../types';
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 type CreateCommentProps = {
-  threadId: number
-  onCommentCreate: (comment: Comment) => void
-}
+  threadId: number;
+  onCommentCreate: (comment: Comment) => void;
+  isLocked: boolean; // New prop to indicate if the thread is locked
+};
 
-const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate }) => {
-  const { user } = useUser()
-  const router = useRouter()
-  const [content, setContent] = useState('')
+const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate, isLocked }) => {
+  const { user } = useUser();
+  const router = useRouter();
+  const [content, setContent] = useState('');
 
   const handleSubmit = () => {
-    const userName = user?.fullName || user?.username || 'Anonymous'
+    const userName = user?.fullName || user?.username || 'Anonymous';
     const newComment: Comment = {
       id: Date.now(),
       threadId,
@@ -45,6 +48,15 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
         >
           Logga in
         </button>
+      </div>
+    );
+  }
+
+  // Prevent commenting if the thread is locked
+  if (isLocked) {
+    return (
+      <div className="border p-4 rounded shadow-sm">
+        <p>Denna tråd är låst och kan inte kommenteras.</p>
       </div>
     );
   }

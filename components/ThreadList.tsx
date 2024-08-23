@@ -1,14 +1,18 @@
 import Link from 'next/link'
 import React from 'react'
 import { Thread } from '../types'
+import { useUser } from '@clerk/nextjs'
 
 type ThreadListProps = {
   threads: Thread[]
+  onToggleLock: (threadId: number) => void
 }
 
-const ThreadList: React.FC<ThreadListProps> = ({ threads }) => {
+const ThreadList: React.FC<ThreadListProps> = ({ threads, onToggleLock }) => {
+  const { user } = useUser();
+
   if (threads.length === 0) {
-    return <p>No threads available.</p>;
+    return <p>No threads available.</p>
   }
 
   return (
@@ -24,6 +28,15 @@ const ThreadList: React.FC<ThreadListProps> = ({ threads }) => {
           <p className="text-sm text-gray-500">
             Created by {thread.username} on {new Date(thread.creationDate).toLocaleDateString()}
           </p>
+
+          {user?.username === thread.username && ( 
+            <button
+              onClick={() => onToggleLock(thread.id)} 
+              className={`mt-2 px-4 py-2 rounded ${thread.isLocked ? 'bg-red-600' : 'bg-green-600'} text-white`}
+            >
+              {thread.isLocked ? 'Unlock Thread' : 'Lock Thread'}
+            </button>
+          )}
 
           {thread.comments && thread.comments.length > 0 && (
             <div className="mt-4 border-t pt-2">
