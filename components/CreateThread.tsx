@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState } from 'react'
 import { Thread } from '../types'
 import { useUser } from '@clerk/nextjs'
@@ -16,14 +15,22 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
   const [description, setDescription] = useState('')
 
   const handleSubmit = () => {
+    if (!user) return
+
     const newThread: Thread = {
       id: Date.now(),
       title,
       description,
       creationDate: new Date().toISOString(),
       category: 'THREAD',
-      comments: [], 
+      comments: [],
+      username: user.username || `${user.firstName} ${user.lastName}`,
     }
+
+    const existingThreads = JSON.parse(localStorage.getItem('threads') || '[]')
+    const updatedThreads = [...existingThreads, newThread]
+    localStorage.setItem('threads', JSON.stringify(updatedThreads))
+
     onCreate(newThread)
     setTitle('')
     setDescription('')

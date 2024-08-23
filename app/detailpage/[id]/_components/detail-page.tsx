@@ -1,3 +1,4 @@
+import React from 'react'
 import { Thread, Comment } from '../../../../types'
 import CreateComment from '../../../../components/CreateComment' 
 
@@ -16,13 +17,11 @@ const Detailpage: React.FC<DetailpageProps> = ({ thread, onCommentCreate }) => {
       <h1 className="text-2xl font-bold mb-4">{thread.title}</h1>
       <p>{thread.description}</p>
       <p className="text-sm text-gray-500 mb-4">
-        Skapad {new Date(thread.creationDate).toLocaleDateString()}
+        Skapad av {thread.username} den {new Date(thread.creationDate).toLocaleDateString()}
       </p>
 
-      {/* Create Comment Component */}
       <CreateComment threadId={thread.id} onCommentCreate={onCommentCreate} />
 
-      {/* Comments List */}
       <h2 className="text-xl font-semibold mt-8">Kommentarer</h2>
       {thread.comments.length === 0 ? (
         <p>Inga kommentarer ännu.</p>

@@ -14,4 +14,5 @@ export type Thread = {
   creationDate: string;
   description: string;
   comments: Comment[]; 
+  username: string; 
 }

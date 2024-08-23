@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import React from 'react'
 import { Thread } from '../types'
 
 type ThreadListProps = {
@@ -16,13 +17,12 @@ const ThreadList: React.FC<ThreadListProps> = ({ threads }) => {
         <div key={thread.id} className="border p-4 rounded shadow-sm">
           <h2 className="text-xl font-bold">
             <Link key={thread.id} href={`/detailpage/${thread.id}`}>
-           
               {thread.title}
             </Link>
           </h2>
           <p>{thread.description}</p>
           <p className="text-sm text-gray-500">
-            Created on {new Date(thread.creationDate).toLocaleDateString()}
+            Created by {thread.username} on {new Date(thread.creationDate).toLocaleDateString()}
           </p>
         </div>
       ))}
