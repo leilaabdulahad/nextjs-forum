@@ -1,9 +1,17 @@
+export type Comment = {
+  id: number;
+  threadId: number;
+  content: string;
+  creationDate: string;
+}
+
 export type ThreadCategory = "THREAD" | "QNA"
 
 export type Thread = {
-  id: number
-  title: string
-  category: ThreadCategory
-  creationDate: string
-  description: string
+  id: number;
+  title: string;
+  category: ThreadCategory;
+  creationDate: string;
+  description: string;
+  comments: Comment[]; 
 }

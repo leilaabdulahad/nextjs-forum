@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState } from 'react'
 import { Thread } from '../types'
 
@@ -17,6 +18,7 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
       description,
       creationDate: new Date().toISOString(),
       category: 'THREAD',
+      comments: [], 
     }
     onCreate(newThread)
     setTitle('')
@@ -33,7 +35,7 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
         onChange={(e) => setTitle(e.target.value)}
       />
       <textarea
-        placeholder="Beskrvning"
+        placeholder="Beskrivning"
         className="w-full p-2 border rounded"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
