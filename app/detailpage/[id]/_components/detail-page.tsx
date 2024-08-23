@@ -1,6 +1,6 @@
 import React from 'react'
 import { Thread, Comment } from '../../../../types'
-import CreateComment from '../../../../components/CreateComment' 
+import CreateComment from '@/components/CreateComment'
 
 type DetailpageProps = {
   thread: Thread | null
@@ -31,7 +31,7 @@ const Detailpage: React.FC<DetailpageProps> = ({ thread, onCommentCreate }) => {
             <li key={comment.id} className="border-b py-2">
               <p>{comment.content}</p>
               <p className="text-sm text-gray-500">
-                Skapad {new Date(comment.creationDate).toLocaleDateString()}
+                Skapad av {comment.username} den {new Date(comment.creationDate).toLocaleDateString()}
               </p>
             </li>
           ))}

@@ -3,6 +3,7 @@ export type Comment = {
   threadId: number;
   content: string;
   creationDate: string;
+  username: string; 
 }
 
 export type ThreadCategory = "THREAD" | "QNA"

@@ -8,7 +8,7 @@ type ThreadListProps = {
 
 const ThreadList: React.FC<ThreadListProps> = ({ threads }) => {
   if (threads.length === 0) {
-    return <p>No threads available.</p>
+    return <p>No threads available.</p>;
   }
 
   return (
@@ -16,7 +16,7 @@ const ThreadList: React.FC<ThreadListProps> = ({ threads }) => {
       {threads.map((thread) => (
         <div key={thread.id} className="border p-4 rounded shadow-sm">
           <h2 className="text-xl font-bold">
-            <Link key={thread.id} href={`/detailpage/${thread.id}`}>
+            <Link href={`/detailpage/${thread.id}`}>
               {thread.title}
             </Link>
           </h2>
@@ -24,6 +24,20 @@ const ThreadList: React.FC<ThreadListProps> = ({ threads }) => {
           <p className="text-sm text-gray-500">
             Created by {thread.username} on {new Date(thread.creationDate).toLocaleDateString()}
           </p>
+
+          {thread.comments && thread.comments.length > 0 && (
+            <div className="mt-4 border-t pt-2">
+              <h3 className="font-semibold">Comments:</h3>
+              {thread.comments.map((comment) => (
+                <div key={comment.id} className="border-b py-2">
+                  <p>{comment.content}</p>
+                  <p className="text-sm text-gray-500">
+                    Commented by {comment.username} on {new Date(comment.creationDate).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
