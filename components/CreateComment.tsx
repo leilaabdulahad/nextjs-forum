@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import { Comment } from '../types'
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 
 type CreateCommentProps = {
   threadId: number;
@@ -9,6 +11,8 @@ type CreateCommentProps = {
 }
 
 const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate }) => {
+  const { user } = useUser() 
+  const router = useRouter() 
   const [content, setContent] = useState('')
 
   const handleSubmit = () => {
@@ -22,6 +26,29 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
     setContent('')
   }
 
+  const handleClick = () => {
+    if (!user) {
+      
+      router.push('/sign-in')
+    } else {
+      handleSubmit()
+    }
+  }
+
+  if (!user) {
+    return (
+      <div className="border p-4 rounded shadow-sm">
+        <p>Du måste vara inloggad för att kunna kommentera.</p>
+        <button
+          onClick={() => router.push('/sign-in')} 
+          className="px-4 py-2 bg-black text-white rounded"
+        >
+          Logga in
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="border p-4 rounded shadow-sm space-y-4">
       <textarea
@@ -31,7 +58,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
         onChange={(e) => setContent(e.target.value)}
       />
       <button
-        onClick={handleSubmit}
+        onClick={handleClick}
         className="px-4 py-2 bg-black text-white rounded"
       >
         Kommentera
