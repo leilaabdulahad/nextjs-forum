@@ -37,11 +37,22 @@ function DetailsPage() {
     }
   }
 
+  const handleThreadUpdate = (updatedThread: Thread) => {
+    setThread(updatedThread);
+    // Update localStorage
+    const storedThreads = localStorage.getItem('threads')
+    if (storedThreads) {
+      const threads: Thread[] = JSON.parse(storedThreads)
+      const updatedThreads = threads.map(t => t.id === updatedThread.id ? updatedThread : t)
+      localStorage.setItem('threads', JSON.stringify(updatedThreads))
+    }
+  }
+
   if (!thread) {
     return <p>Thread not found.</p>
   }
 
-  return <Detailpage thread={thread} onCommentCreate={handleCommentCreate} />
+  return <Detailpage thread={thread} onCommentCreate={handleCommentCreate} onThreadUpdate={handleThreadUpdate} />
 }
 
 export default DetailsPage
