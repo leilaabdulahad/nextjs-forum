@@ -21,6 +21,7 @@ const Home = () => {
     setThreads(updatedThreads)
     localStorage.setItem('threads', JSON.stringify(updatedThreads))
   }
+  
 
   const toggleThreadLock = (threadId: number) => {
     const updatedThreads = threads.map(thread => {
@@ -34,6 +35,7 @@ const Home = () => {
     localStorage.setItem('threads', JSON.stringify(updatedThreads))
   }
 
+  
   
 
   return (

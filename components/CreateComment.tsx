@@ -1,40 +1,39 @@
-// CreateComment.tsx
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Comment } from '../types';
-import { useUser } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react'
+import { Comment } from '../types'
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 
 type CreateCommentProps = {
   threadId: number;
   onCommentCreate: (comment: Comment) => void;
-  isLocked: boolean; // New prop to indicate if the thread is locked
+  isLocked: boolean; 
 };
 
 const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate, isLocked }) => {
-  const { user } = useUser();
-  const router = useRouter();
-  const [content, setContent] = useState('');
+  const { user } = useUser()
+  const router = useRouter()
+  const [content, setContent] = useState('')
 
   const handleSubmit = () => {
-    const userName = user?.fullName || user?.username || 'Anonymous';
+    const userName = user?.fullName || user?.username || 'Anonymous'
     const newComment: Comment = {
       id: Date.now(),
       threadId,
       content,
       creationDate: new Date().toISOString(),
       username: userName,
-    };
+    }
     onCommentCreate(newComment);
-    setContent('');
-  };
+    setContent('')
+  }
 
   const handleClick = () => {
     if (!user) {
-      router.push('/sign-in');
+      router.push('/sign-in')
     } else {
-      handleSubmit();
+      handleSubmit()
     }
   };
 
@@ -52,7 +51,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
     );
   }
 
-  // Prevent commenting if the thread is locked
+  //prevents commenting if the threads locked
   if (isLocked) {
     return (
       <div className="border p-4 rounded shadow-sm">
@@ -76,7 +75,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
         Kommentera
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default CreateComment;
+export default CreateComment

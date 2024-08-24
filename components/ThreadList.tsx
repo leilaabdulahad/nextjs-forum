@@ -9,7 +9,7 @@ type ThreadListProps = {
 }
 
 const ThreadList: React.FC<ThreadListProps> = ({ threads, onToggleLock }) => {
-  const { user } = useUser();
+  const { user } = useUser()
 
   if (threads.length === 0) {
     return <p>No threads available.</p>

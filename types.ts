@@ -4,6 +4,7 @@ export type Comment = {
   content: string;
   creationDate: string;
   username: string; 
+  isAnswer?: boolean;
 }
 
 export type ThreadCategory = "THREAD" | "QNA"

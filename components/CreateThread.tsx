@@ -1,6 +1,7 @@
 'use client'
+
 import React, { useState } from 'react'
-import { Thread } from '../types'
+import { Thread, ThreadCategory } from '../types'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
@@ -13,6 +14,7 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [category, setCategory] = useState<ThreadCategory>('THREAD')
 
   const handleSubmit = () => {
     if (!user) return
@@ -22,7 +24,7 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
       title,
       description,
       creationDate: new Date().toISOString(),
-      category: 'THREAD',
+      category,  
       comments: [],
       username: user.username || `${user.firstName} ${user.lastName}`,
       isLocked: false,
@@ -35,6 +37,7 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
     onCreate(newThread)
     setTitle('')
     setDescription('')
+    setCategory('THREAD') 
   }
 
   const handleClick = () => {
@@ -74,6 +77,17 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
+      <div className="mb-4">
+        <label className="mr-4">Kategori:</label>
+        <select 
+          value={category} 
+          onChange={(e) => setCategory(e.target.value as ThreadCategory)} 
+          className="p-2 border rounded"
+        >
+          <option value="THREAD">Diskussionstråd</option>
+          <option value="QNA">Fråga och Svar</option>
+        </select>
+      </div>
       <button
         onClick={handleClick}
         className="px-4 py-2 bg-black text-white rounded"
