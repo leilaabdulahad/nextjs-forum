@@ -19,3 +19,9 @@ export type Thread = {
   username: string; 
   isLocked: boolean;
 }
+
+export type User = {
+  id: string;
+  username: string;
+  isModerator: boolean;
+}

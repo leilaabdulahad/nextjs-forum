@@ -32,19 +32,19 @@ const CommentList: React.FC<CommentListProps> = ({
           <p className="text-sm text-gray-500">
             Skapad av {comment.username} den {new Date(comment.creationDate).toLocaleDateString()}
           </p>
-          {threadCategory === 'QNA' && threadOwner === userUsername && !comment.isAnswer && ( // Use userUsername here
+          {threadCategory === 'QNA' && threadOwner === userUsername && (
             <button 
               onClick={() => onMarkAsAnswer(comment.id)} 
               className="text-blue-500"
             >
-              Mark as Answer
+              {comment.isAnswer ? 'Avmarkera som svar' : 'Markera som svar'}
             </button>
           )}
-          {comment.isAnswer && <p className="text-green-500">[Svar]</p>}
+          {comment.isAnswer && <p className="text-green-500">Svar</p>}
         </li>
       ))}
     </ul>
-  )
-}
+  );
+};
 
 export default CommentList

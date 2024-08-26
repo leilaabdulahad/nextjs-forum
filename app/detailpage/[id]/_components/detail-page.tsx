@@ -3,6 +3,7 @@ import { Thread, Comment } from '../../../../types'
 import CreateComment from '@/components/CreateComment'
 import CommentList from '@/components/CommentList'
 import { useUser } from '@clerk/nextjs' 
+import  EditThread from '@/components/EditThread'
 
 type DetailpageProps = {
   thread: Thread | null;
@@ -41,6 +42,14 @@ const Detailpage: React.FC<DetailpageProps> = ({
           {thread.isLocked ? 'Unlock Thread' : 'Lock Thread'}
         </button>
       )}
+
+      <EditThread 
+        thread={thread} 
+        userUsername={userUsername} 
+        onUpdateThread={onThreadUpdate} 
+      />
+
+
 
       <CreateComment 
         threadId={thread.id} 

@@ -56,22 +56,24 @@ const DetailsPage = () => {
 
   const handleCommentMarkAsAnswer = (commentId: number) => {
     if (!thread) return
-
+  
     const updatedComments = thread.comments.map(comment =>
-      comment.id === commentId ? { ...comment, isAnswer: true } : comment
+      comment.id === commentId
+        ? { ...comment, isAnswer: !comment.isAnswer } 
+        : { ...comment, isAnswer: false }
     )
-
+  
     const updatedThread = {
       ...thread,
       comments: updatedComments,
     }
-
+  
+    console.log('Updated Thread:', updatedThread)
+  
     handleThreadUpdate(updatedThread)
   }
-
-  if (!thread) {
-    return <p>Thread not found.</p>
-  }
+  
+  
 
   const userUsername = user?.username || undefined
 
