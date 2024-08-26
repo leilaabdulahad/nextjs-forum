@@ -4,9 +4,12 @@ import { useParams } from 'next/navigation'
 import { Thread, Comment } from '../../../types'
 import Detailpage from './_components/detail-page'
 import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/router'
+
 
 const DetailsPage = () => {
-  const { id } = useParams()
+  const router = useRouter()
+  const { id } = router.query 
   const [thread, setThread] = useState<Thread | null>(null)
   const { user } = useUser()
 

@@ -5,6 +5,8 @@ import { Thread, ThreadCategory } from '../types'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
+type CreateThreadPayload = Omit<Thread, 'id'> & { comments: [] }
+
 type CreateThreadProps = {
   onCreate: (thread: Thread) => void
 }
@@ -16,28 +18,41 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState<ThreadCategory>('THREAD')
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!user) return
 
-    const newThread: Thread = {
-      id: Date.now(),
+    const newThread: CreateThreadPayload = {
       title,
       description,
       creationDate: new Date().toISOString(),
-      category,  
-      comments: [],
+      category,
       username: user.username || `${user.firstName} ${user.lastName}`,
       isLocked: false,
+      comments: [] 
     }
 
-    const existingThreads = JSON.parse(localStorage.getItem('threads') || '[]')
-    const updatedThreads = [...existingThreads, newThread]
-    localStorage.setItem('threads', JSON.stringify(updatedThreads))
+    try {
+      const response = await fetch('/api/threads/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newThread),
+      })
 
-    onCreate(newThread)
-    setTitle('')
-    setDescription('')
-    setCategory('THREAD') 
+      if (!response.ok) {
+        console.error(`Response status: ${response.status}, status text: '${response.statusText}'`);
+        throw new Error('Failed to create thread');
+      }
+
+      const createdThread: Thread = await response.json()
+      onCreate(createdThread) 
+      setTitle('')
+      setDescription('')
+      setCategory('THREAD') 
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const handleClick = () => {
