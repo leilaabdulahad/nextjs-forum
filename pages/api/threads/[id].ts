@@ -26,8 +26,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       res.status(500).json({ message: 'Error fetching thread', error })
     }
+  } else if (req.method === 'PUT') {
+    try {
+      const thread = await Thread.findByIdAndUpdate(id, req.body, { new: true });
+      if (!thread) {
+        res.status(404).json({ message: 'Thread not found' });
+      } else {
+        res.status(200).json(thread);
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Error updating thread', error });
+    }
   } else {
-    res.setHeader('Allow', ['POST', 'GET'])
+    res.setHeader('Allow', ['POST', 'GET', 'PUT'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

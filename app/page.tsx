@@ -23,20 +23,27 @@ const Home = () => {
   }
   
 
-  const toggleThreadLock = (threadId: string) => {
-    const updatedThreads = threads.map(thread => {
-      if (thread._id === threadId && thread.username === user?.username) {
-        return { ...thread, isLocked: !thread.isLocked }
+  const toggleThreadLock = async (threadId: string) => {
+    const thread = threads.find(thread => thread._id === threadId)
+    if (thread) {
+      const updatedThread = { ...thread, isLocked: !thread.isLocked }
+      try {
+        const response = await fetch(`/api/threads/${threadId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isLocked: updatedThread.isLocked }),
+        })
+        if (!response.ok) {
+          throw new Error('Response not OK')
+        }
+        const updatedThreadFromServer = await response.json()
+        //updates the thread in the state
+        setThreads(threads.map(thread => thread._id === threadId ? updatedThreadFromServer : thread))
+      } catch (error) {
+        console.error('Error updating thread:', error)
       }
-      return thread
-    })
-
-    setThreads(updatedThreads)
-    localStorage.setItem('threads', JSON.stringify(updatedThreads))
+    }
   }
-
-  
-  
 
   return (
     <div className="container mx-auto p-4">
