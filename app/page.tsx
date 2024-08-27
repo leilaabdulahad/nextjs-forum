@@ -23,9 +23,9 @@ const Home = () => {
   }
   
 
-  const toggleThreadLock = (threadId: number) => {
+  const toggleThreadLock = (threadId: string) => {
     const updatedThreads = threads.map(thread => {
-      if (thread.id === threadId && thread.username === user?.username) {
+      if (thread._id === threadId && thread.username === user?.username) {
         return { ...thread, isLocked: !thread.isLocked }
       }
       return thread

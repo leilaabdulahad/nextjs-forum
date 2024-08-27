@@ -1,6 +1,6 @@
 export type Comment = {
-  id: number;
-  threadId: number;
+  _id: string;
+  threadId?: string;
   content: string;
   creationDate: string;
   username: string; 
@@ -10,7 +10,7 @@ export type Comment = {
 export type ThreadCategory = "THREAD" | "QNA"
 
 export type Thread = {
-  id: number;
+  _id: string;
   title: string;
   category: ThreadCategory;
   creationDate: string;
@@ -21,7 +21,7 @@ export type Thread = {
 }
 
 export type User = {
-  id: string;
+  _id: string;
   username: string;
   isModerator: boolean;
 }

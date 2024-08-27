@@ -4,13 +4,13 @@ import { Comment, ThreadCategory } from '../types'
 type CommentListProps = {
   comments: Comment[]
   threadCategory: ThreadCategory
-  threadOwner: string
-  userUsername?: string 
-  onMarkAsAnswer: (commentId: number) => void
-}
+  threadOwner: string;
+  userUsername?: string;
+  onMarkAsAnswer: (commentId: string) => void;
+};
 
 const CommentList: React.FC<CommentListProps> = ({
-  comments,
+  comments = [], 
   threadCategory,
   threadOwner,
   userUsername, 
@@ -20,21 +20,21 @@ const CommentList: React.FC<CommentListProps> = ({
     return <p>Inga kommentarer ännu.</p>
   }
 
-  console.log('Thread Category:', threadCategory)
-  console.log('Thread Owner:', threadOwner)
-  console.log('User Username:', userUsername)
+  console.log('Category:', threadCategory)
+  console.log('Owner:', threadOwner)
+  console.log('Username:', userUsername)
 
   return (
     <ul>
       {comments.map((comment) => (
-        <li key={comment.id} className={`border-b py-2 ${comment.isAnswer ? 'bg-green-100' : ''}`}>
+        <li key={comment._id} className={`border-b py-2 ${comment.isAnswer ? 'bg-green-100' : ''}`}>
           <p>{comment.content}</p>
           <p className="text-sm text-gray-500">
             Skapad av {comment.username} den {new Date(comment.creationDate).toLocaleDateString()}
           </p>
           {threadCategory === 'QNA' && threadOwner === userUsername && (
             <button 
-              onClick={() => onMarkAsAnswer(comment.id)} 
+              onClick={() => onMarkAsAnswer(comment._id)} 
               className="text-blue-500"
             >
               {comment.isAnswer ? 'Avmarkera som svar' : 'Markera som svar'}
@@ -44,7 +44,7 @@ const CommentList: React.FC<CommentListProps> = ({
         </li>
       ))}
     </ul>
-  );
-};
+  )
+}
 
 export default CommentList
