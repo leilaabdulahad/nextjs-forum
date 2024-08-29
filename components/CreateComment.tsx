@@ -1,12 +1,11 @@
 'use client'
 import React, { useState } from 'react'
-import { Comment } from '../types'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
 interface CreateCommentProps {
-  threadId?: string;  
-  onCommentCreate: (newComment: Comment) => void;
+  threadId: string;  
+  onCommentCreate: (newComment: any) => void;
   isLocked: boolean;
 }
 
@@ -15,17 +14,28 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
   const router = useRouter()
   const [content, setContent] = useState('')
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const userName = user?.fullName || user?.username || 'Anonymous'
-    const newComment: Comment = {
-      _id: Date.now().toString(), 
-      threadId,
-      content,
-      creationDate: new Date().toISOString(),
-      username: userName,
+
+    try {
+      const response = await fetch(`/api/threads/${threadId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content, username: userName }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create comment')
+      }
+
+      const updatedThread = await response.json()
+      onCommentCreate(updatedThread)
+      setContent('')
+    } catch (error) {
+      console.error('Error creating comment:', error)
     }
-    onCommentCreate(newComment)
-    setContent('')
   }
 
   const handleClick = () => {
@@ -34,27 +44,26 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
     } else {
       handleSubmit()
     }
-  };
+  }
 
   if (!user) {
     return (
       <div className="border p-4 rounded shadow-sm">
-        <p>Du måste vara inloggad för att kunna kommentera.</p>
+        <p>You need to be logged in to comment.</p>
         <button
           onClick={() => router.push('/sign-in')}
           className="px-4 py-2 bg-black text-white rounded"
         >
-          Logga in
+          Log in
         </button>
       </div>
     )
   }
 
-  //prevents commenting if the threads locked
   if (isLocked) {
     return (
       <div className="border p-4 rounded shadow-sm">
-        <p>Denna tråd är låst och kan inte kommenteras.</p>
+        <p>This thread is locked and cannot be commented on.</p>
       </div>
     )
   }
@@ -62,7 +71,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
   return (
     <div className="border p-4 rounded shadow-sm space-y-4">
       <textarea
-        placeholder="Skriv din kommentar här..."
+        placeholder="Write your comment here..."
         className="w-full p-2 border rounded"
         value={content}
         onChange={(e) => setContent(e.target.value)}
@@ -71,7 +80,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({ threadId, onCommentCreate
         onClick={handleClick}
         className="px-4 py-2 bg-black text-white rounded"
       >
-        Kommentera
+        Comment
       </button>
     </div>
   )

@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import CreateThread from '../components/CreateThread'
 import ThreadList from '../components/ThreadList'
@@ -10,16 +11,25 @@ const Home = () => {
   const { user } = useUser()
 
   useEffect(() => {
-    const storedThreads = localStorage.getItem('threads')
-    if (storedThreads) {
-      setThreads(JSON.parse(storedThreads))
+    const fetchThreads = async () => {
+      try {
+        const response = await fetch('/api/threads')
+        if (!response.ok) {
+          throw new Error('Failed to fetch threads')
+        }
+        const data: Thread[] = await response.json()
+        setThreads(data)
+      } catch (error) {
+        console.error('Error fetching threads:', error)
+      }
     }
+
+    fetchThreads()
   }, [])
 
   const handleCreateThread = (newThread: Thread) => {
     const updatedThreads = [...threads, newThread]
     setThreads(updatedThreads)
-    localStorage.setItem('threads', JSON.stringify(updatedThreads))
   }
   
 
@@ -37,7 +47,6 @@ const Home = () => {
           throw new Error('Response not OK')
         }
         const updatedThreadFromServer = await response.json()
-        //updates the thread in the state
         setThreads(threads.map(thread => thread._id === threadId ? updatedThreadFromServer : thread))
       } catch (error) {
         console.error('Error updating thread:', error)

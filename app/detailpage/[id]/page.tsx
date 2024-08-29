@@ -1,35 +1,44 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Detailpage from './_components/detail-page'
-import { Thread, Comment } from '../../../types'
+import { Thread, Comment } from '@/types'
 import { useUser } from '@clerk/nextjs'
 
 const DetailsPage = () => {
-  const params = useParams<{ _id: string }>()
-  const _id = params ? params._id : undefined
+  const params = useParams<{ id: string }>()
+  const id = params ? params.id : undefined
   const [thread, setThread] = useState<Thread | null>(null)
   const { user } = useUser()
 
   useEffect(() => {
-    if (_id) {
-      fetch(`/api/threads/${_id}`)
+    if (id) {
+      fetch(`/api/threads/${id}`)
         .then(response => response.json())
         .then(data => setThread(data))
         .catch(error => console.error('Error fetching thread:', error))
     }
-  }, [_id])
+  }, [id])
 
+  const handleCommentCreate = async (newComment: Comment) => {
+    try {
+      const response = await fetch(`/api/threads/${thread?._id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newComment),
+      })
 
-
-  const handleCommentCreate = (newComment: Comment) => {
-    if (thread) {
-      const commentWithAnswerFlag = { ...newComment, isAnswer: false }
-      const updatedThread = {
-        ...thread,
-        comments: [...thread.comments, commentWithAnswerFlag],
+      if (!response.ok) {
+        throw new Error('Failed to create comment')
       }
+
+      const updatedThread = await response.json()
       setThread(updatedThread)
+    } catch (error) {
+      console.error('Error creating comment:', error)
     }
   }
 
@@ -37,7 +46,7 @@ const DetailsPage = () => {
     setThread(updatedThread)
   }
 
-  const handleCommentMarkAsAnswer = (commentId: string) => {
+  const handleCommentMarkAsAnswer = async (commentId: string) => {
     if (!thread) return
 
     const updatedComments = thread.comments.map(comment =>
@@ -46,17 +55,31 @@ const DetailsPage = () => {
         : { ...comment, isAnswer: false }
     )
 
-    const updatedThread = {
-      ...thread,
-      comments: updatedComments,
-    }
+    const updatedThread = { ...thread, comments: updatedComments }
 
-    handleThreadUpdate(updatedThread)
+    try {
+      const response = await fetch(`/api/threads/${thread._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comments: updatedThread.comments }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update thread')
+      }
+
+      const data = await response.json()
+      setThread(data)
+    } catch (error) {
+      console.error('Error marking comment as answer:', error)
+    }
   }
 
   const userUsername = user?.username || undefined
 
-  return (
+  return thread ? (
     <Detailpage 
       thread={thread}
       onCommentCreate={handleCommentCreate} 
@@ -64,6 +87,8 @@ const DetailsPage = () => {
       onCommentMarkAsAnswer={handleCommentMarkAsAnswer} 
       userUsername={userUsername} 
     />
+  ) : (
+    <p>Loading...</p>
   )
 }
 

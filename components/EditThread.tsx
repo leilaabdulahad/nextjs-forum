@@ -1,10 +1,11 @@
 'use client'
+
 import React, { useState } from 'react'
 import { Thread } from '../types'
 
 type EditThreadProps = {
   thread: Thread;
-  userUsername: string | undefined; 
+  userUsername: string | undefined;
   onUpdateThread: (updatedThread: Thread) => void;
 }
 
@@ -21,10 +22,26 @@ const EditThread: React.FC<EditThreadProps> = ({
     return <p>Du har inte rätt att redigera denna tråd.</p>
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedThread = { ...thread, title, description }
-    onUpdateThread(updatedThread)
-    setIsEditing(false)
+
+    try {
+      const response = await fetch(`/api/threads/${thread._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update thread')
+      }
+
+      const updatedThreadFromServer = await response.json()
+      onUpdateThread(updatedThreadFromServer)
+      setIsEditing(false)
+    } catch (error) {
+      console.error('Error updating thread:', error)
+    }
   }
 
   return (
