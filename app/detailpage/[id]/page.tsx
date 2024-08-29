@@ -6,7 +6,7 @@ import Detailpage from './_components/detail-page'
 import { Thread, Comment } from '@/types'
 import { useUser } from '@clerk/nextjs'
 
-const DetailsPage = () => {
+function DetailsPage(): JSX.Element {
   const params = useParams<{ id: string }>()
   const id = params ? params.id : undefined
   const [thread, setThread] = useState<Thread | null>(null)

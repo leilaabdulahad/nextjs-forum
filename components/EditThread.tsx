@@ -9,11 +9,11 @@ type EditThreadProps = {
   onUpdateThread: (updatedThread: Thread) => void;
 }
 
-const EditThread: React.FC<EditThreadProps> = ({
+function EditThread({
   thread,
   userUsername,
   onUpdateThread,
-}) => {
+}: EditThreadProps): JSX.Element {
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(thread.title)
   const [description, setDescription] = useState(thread.description)

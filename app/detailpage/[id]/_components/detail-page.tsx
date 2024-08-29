@@ -1,4 +1,4 @@
-import React from 'react'
+'use client'
 import { Thread, Comment } from '../../../../types'
 import CreateComment from '@/components/CreateComment'
 import CommentList from '@/components/CommentList'
@@ -13,13 +13,13 @@ type DetailpageProps = {
   userUsername?: string;
 }
 
-const Detailpage: React.FC<DetailpageProps> = ({
+function Detailpage({
   thread,
   onCommentCreate,
   onThreadUpdate,
   onCommentMarkAsAnswer,
   userUsername,
-}) => {
+}: DetailpageProps): JSX.Element {
   const { user } = useUser()
 
   return (
