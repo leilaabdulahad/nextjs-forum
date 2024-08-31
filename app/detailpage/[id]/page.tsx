@@ -9,50 +9,49 @@ function DetailsPage(): JSX.Element {
   const params = useParams<{ id: string }>() || { id: '' }
   const id = params.id
   const [thread, setThread] = useState<Thread | null>(null)
+  const [comments, setComments] = useState<Comment[]>([])
   const { user } = useUser()
 
   useEffect(() => {
-    const fetchThread = async () => {
+    const fetchThreadAndComments = async () => {
       if (id) {
         try {
-          const response = await fetch(`/api/threads/${id}`)
-          if (!response.ok) {
+          const threadResponse = await fetch(`/api/threads/${id}`)
+          if (!threadResponse.ok) {
             throw new Error('Failed to fetch thread')
           }
-          const data: Thread = await response.json()
-          setThread(data)
+          const threadData: Thread = await threadResponse.json()
+          setThread(threadData)
+
+          const commentsResponse = await fetch(`/api/threads/${id}/comments`)
+          if (!commentsResponse.ok) {
+            throw new Error('Failed to fetch comments')
+          }
+          const commentsData: Comment[] = await commentsResponse.json()
+          setComments(commentsData)
         } catch (error) {
-          console.error('Error fetching thread:', error)
+          console.error('Error fetching thread or comments:', error)
         }
       }
     };
-
-    fetchThread()
+    fetchThreadAndComments()
   }, [id])
 
   const handleCommentCreate = async (newComment: Comment) => {
     if (!thread) return
-
-    console.log('Creating comment for thread:', newComment)
-
     try {
       const response = await fetch(`/api/threads/${thread._id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newComment), 
+        body: JSON.stringify(newComment),
       })
-
       if (!response.ok) {
         throw new Error('Failed to create comment')
       }
-
-      //fetches the updated thread after creating a new comment
-      const responseThread = await fetch(`/api/threads/${thread._id}`)
-      const updatedThread: Thread = await responseThread.json()
-
-      setThread(updatedThread);
+      const createdComment: Comment = await response.json()
+      setComments(prevComments => [...prevComments, createdComment])
     } catch (error) {
       console.error('Error creating comment:', error)
     }
@@ -63,41 +62,47 @@ function DetailsPage(): JSX.Element {
   }
 
   const handleCommentMarkAsAnswer = async (commentId: string) => {
-    if (!thread) return
-
-    const updatedComments = thread.comments.map(comment =>
-      comment._id === commentId ? { ...comment, isAnswer: !comment.isAnswer } : { ...comment, isAnswer: false }
-    )
-
-    const updatedThread = { ...thread, comments: updatedComments }
-
+    if (!thread) return;
+    const updatedComments = comments.map(comment =>
+      comment._id === commentId
+        ? { ...comment, isAnswer: !comment.isAnswer }
+        : { ...comment, isAnswer: false }
+    );
+    
     try {
       const response = await fetch(`/api/threads/${thread._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ comments: updatedThread.comments }),
-      })
-
+        body: JSON.stringify({ 
+          comments: updatedComments,
+          isLocked: true
+        }),
+      });
+      
       if (!response.ok) {
-        throw new Error('Failed to update thread')
+        throw new Error('Failed to update thread');
       }
-
-      const data: Thread = await response.json()
-      setThread(data)
+      
+      const updatedThread: Thread = await response.json();
+      setThread(updatedThread);
+      setComments(updatedThread.comments);
     } catch (error) {
-      console.error('Error marking comment as answer:', error)
+      console.error('Error marking comment as answer:', error);
     }
-  }
+  };
 
   const userUsername = user?.username || ''
 
   return thread ? (
-    <Detailpage 
+    <Detailpage
       thread={thread}
-      onThreadUpdate={handleThreadUpdate} 
-      userUsername={userUsername} 
+      comments={comments}
+      onThreadUpdate={handleThreadUpdate}
+      onCommentCreate={handleCommentCreate}
+      userUsername={userUsername}
+      onCommentMarkAsAnswer={handleCommentMarkAsAnswer}
     />
   ) : (
     <p>Loading...</p>
