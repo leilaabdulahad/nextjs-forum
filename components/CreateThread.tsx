@@ -6,11 +6,11 @@ import { useRouter } from 'next/navigation'
 
 type CreateThreadPayload = Omit<Thread, '_id'> & { comments: [] }
 
-type CreateThreadProps = {
+interface CreateThreadProps {
   onCreate: (thread: Thread) => void
 }
 
-const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
+const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
   const { user } = useUser()
   const router = useRouter()
   const [title, setTitle] = useState('')
@@ -19,7 +19,6 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
 
   const handleSubmit = async () => {
     if (!user) return
-
     const newThread: CreateThreadPayload = {
       title,
       description,
@@ -27,9 +26,8 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
       category,
       username: user.username || `${user.firstName} ${user.lastName}`,
       isLocked: false,
-      comments: [] 
+      comments: []
     }
-
     try {
       const response = await fetch('/api/threads/create', {
         method: 'POST',
@@ -38,17 +36,15 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
         },
         body: JSON.stringify(newThread),
       })
-
       if (!response.ok) {
         console.error(`Response status: ${response.status}, status text: '${response.statusText}'`)
         throw new Error('Failed to create thread')
       }
-
       const createdThread: Thread = await response.json()
-      onCreate(createdThread) 
+      onCreate(createdThread)
       setTitle('')
       setDescription('')
-      setCategory('THREAD') 
+      setCategory('THREAD')
     } catch (error) {
       console.error(error)
     }
@@ -93,9 +89,9 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
       />
       <div className="mb-4">
         <label className="mr-4">Kategori:</label>
-        <select 
-          value={category} 
-          onChange={(e) => setCategory(e.target.value as ThreadCategory)} 
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value as ThreadCategory)}
           className="p-2 border rounded"
         >
           <option value="THREAD">Diskussionstråd</option>

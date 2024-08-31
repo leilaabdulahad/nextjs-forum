@@ -5,10 +5,9 @@ type CommentFormProps = {
     threadId: string
     username: string
     onCommentCreated?: (newComment: Comment) => void
-  }
-  
+}
 
-const CommentForm: React.FC<CommentFormProps> = ({ threadId, username, onCommentCreated }) => {
+const CommentForm = ({ threadId, username, onCommentCreated }: CommentFormProps): JSX.Element => {
     const [content, setContent] = useState('')
 
     const handleSubmit = async (event: React.FormEvent) => {

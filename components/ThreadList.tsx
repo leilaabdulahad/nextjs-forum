@@ -3,12 +3,12 @@ import React from 'react'
 import { Thread } from '../types'
 import { useUser } from '@clerk/nextjs'
 
-type ThreadListProps = {
+interface ThreadListProps {
   threads: Thread[]
   onToggleLock: (threadId: string) => void;
-};
+}
 
-const ThreadList: React.FC<ThreadListProps> = ({ threads, onToggleLock }) => {
+const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => {
   const { user } = useUser()
 
   if (threads.length === 0) {
@@ -28,15 +28,14 @@ const ThreadList: React.FC<ThreadListProps> = ({ threads, onToggleLock }) => {
           <p className="text-sm text-gray-500">
             Created by {thread.username} on {new Date(thread.creationDate).toLocaleDateString()}
           </p>
-
           {user?.username === thread.username && (
             <button
               onClick={() => onToggleLock(thread._id)}
-              className={`mt-2 px-4 py-2 rounded ${thread.isLocked ? 'bg-red-600' : 'bg-green-600'} text-white`}>
+              className={`mt-2 px-4 py-2 rounded ${thread.isLocked ? 'bg-red-600' : 'bg-green-600'} text-white`}
+            >
               {thread.isLocked ? 'Unlock Thread' : 'Lock Thread'}
             </button>
           )}
-
           {thread.comments && thread.comments.length > 0 && (
             <div className="mt-4 border-t pt-2">
               <h3 className="font-semibold">Comments:</h3>
