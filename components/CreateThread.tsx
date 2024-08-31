@@ -5,7 +5,7 @@ import { Thread, ThreadCategory } from '../types'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
-type CreateThreadPayload = Omit<Thread, 'id'> & { comments: [] }
+type CreateThreadPayload = Omit<Thread, '_id'> & { comments: [] }
 
 type CreateThreadProps = {
   onCreate: (thread: Thread) => void
