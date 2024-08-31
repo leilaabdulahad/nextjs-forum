@@ -40,8 +40,8 @@ const ThreadList: React.FC<ThreadListProps> = ({ threads, onToggleLock }) => {
           {thread.comments && thread.comments.length > 0 && (
             <div className="mt-4 border-t pt-2">
               <h3 className="font-semibold">Comments:</h3>
-              {thread.comments.map((comment) => (
-                <div key={comment._id} className="border-b py-2">
+              {thread.comments.map((comment, index) => (
+                <div key={index} className="border-b py-2">
                   <p>{comment.content}</p>
                   <p className="text-sm text-gray-500">
                     Commented by {comment.username} on {new Date(comment.creationDate).toLocaleDateString()}
