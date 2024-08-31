@@ -1,26 +1,37 @@
-'use client'
+import { useState, useEffect } from 'react'
 import { Thread, Comment } from '../../../../types'
-import CreateComment from '@/components/CreateComment'
-import CommentList from '@/components/CommentList'
 import { useUser } from '@clerk/nextjs'
 import EditThread from '@/components/EditThread'
+import CommentForm from '../../../../components/CommentForm'
+import CommentList from '@/components/CommentList'
 
 type DetailpageProps = {
-  thread: Thread;
-  onCommentCreate: (comment: Comment) => void;
-  onThreadUpdate: (updatedThread: Thread) => void;
-  onCommentMarkAsAnswer: (commentId: string) => void;
-  userUsername?: string;
+  thread: Thread
+  onThreadUpdate: (updatedThread: Thread) => void
+  userUsername?: string
 }
 
 function Detailpage({
   thread,
-  onCommentCreate,
   onThreadUpdate,
-  onCommentMarkAsAnswer,
   userUsername,
 }: DetailpageProps): JSX.Element {
-  const { user } = useUser()
+  const { user } = useUser();
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/threads/${thread._id}/comments`)
+      .then(response => response.json())
+      .then(setComments)
+  }, [thread._id])
+
+  const handleCommentCreated = (newComment: Comment) => {
+    setComments(prevComments => [...prevComments, newComment])
+  }
+
+  if (!user || !user.username) {
+    return <p>Please log in to view this page</p>
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -38,20 +49,8 @@ function Detailpage({
         />
       )}
 
-      <CreateComment 
-        threadId={thread._id}  
-        onCommentCreate={onCommentCreate} 
-        isLocked={thread.isLocked} 
-      />
-
-      <h2 className="text-xl font-semibold mt-8">Comments</h2>
-      <CommentList 
-        comments={thread.comments} 
-        threadCategory={thread.category} 
-        threadOwner={thread.username} 
-        userUsername={userUsername} 
-        onMarkAsAnswer={onCommentMarkAsAnswer} 
-      />
+      <CommentList comments={comments} /> 
+      <CommentForm threadId={thread._id} username={user.username} onCommentCreated={handleCommentCreated} /> 
     </div>
   )
 }

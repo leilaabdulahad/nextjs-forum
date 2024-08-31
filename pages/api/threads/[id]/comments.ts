@@ -1,38 +1,43 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import dbConnect from '../../../../lib/dbConnect'
-import Thread from '../../../../models/Thread'
+import dbConnect from '@/lib/dbConnect'
+import Thread from '@/models/Thread'
+import Comment from '@/models/Comment' 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query
-
   await dbConnect()
+
+  const { id } = req.query
 
   if (req.method === 'POST') {
     try {
-      const thread = await Thread.findById(id)
-
-      if (!thread) {
-        return res.status(404).json({ message: 'Thread not found' })
-      }
-
       const { content, username } = req.body
+      const comment = new Comment({ content, username, thread: id }) 
+      await comment.save()
 
-      const newComment = {
-        content,
-        username,
-        creationDate: new Date(),
-        isAnswer: false,
+      const thread = await Thread.findById(id)
+      if (!thread) {
+        res.status(404).json({ message: 'Thread not found' })
+      } else {
+        thread.comments.push(comment) 
+        await thread.save()
+        res.status(201).json(comment)
       }
-
-      thread.comments.push(newComment)
-      await thread.save()
-
-      return res.status(201).json(thread)
     } catch (error) {
-      return res.status(500).json({ message: 'Error creating comment', error })
+      res.status(500).json({ message: 'Error creating comment', error })
+    }
+  } else if (req.method === 'GET') {
+    try {
+      const thread = await Thread.findById(id).populate('comments')
+      if (!thread) {
+        res.status(404).json({ message: 'Thread not found' })
+      } else {
+        res.status(200).json(thread.comments) 
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching comments', error })
     }
   } else {
-    res.setHeader('Allow', ['POST'])
+    res.setHeader('Allow', ['POST', 'GET'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

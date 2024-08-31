@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState } from 'react'
 import { Thread, ThreadCategory } from '../types'
 import { useUser } from '@clerk/nextjs'
@@ -41,8 +40,8 @@ const CreateThread: React.FC<CreateThreadProps> = ({ onCreate }) => {
       })
 
       if (!response.ok) {
-        console.error(`Response status: ${response.status}, status text: '${response.statusText}'`);
-        throw new Error('Failed to create thread');
+        console.error(`Response status: ${response.status}, status text: '${response.statusText}'`)
+        throw new Error('Failed to create thread')
       }
 
       const createdThread: Thread = await response.json()

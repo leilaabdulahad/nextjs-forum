@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI
 
 if (!MONGODB_URI) {
   console.error('MONGODB_URI is not defined')
-  throw new Error('Define the MONGODB_URI environment variable inside .env.local');
+  throw new Error('Define the MONGODB_URI environment variable inside .env.local')
 } else {
   console.log('MONGODB_URI:', MONGODB_URI)
 }
@@ -17,16 +17,22 @@ if (!cached) {
 
 async function dbConnect() {
   if (cached.conn) {
-    return cached.conn;
+    return cached.conn
   }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-    };
+      useNewUrlParser: true,  
+      useUnifiedTopology: true, 
+    }
 
     cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((mongoose) => {
-        return mongoose
+      console.log('MongoDB connected successfully')
+      return mongoose
+    }).catch((error) => {
+      console.error('MongoDB connection error:', error)
+      throw new Error('Failed to connect to MongoDB')
     })
   }
   cached.conn = await cached.promise
