@@ -16,7 +16,7 @@ function CommentList({ comments, onMarkAsAnswer, isQna }: CommentListProps) {
                     <p className="text-sm text-gray-400">{new Date(comment.creationDate).toLocaleDateString()}</p>
                     {isQna && (
                         <button 
-                            className="mt-2 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                            className="mt-2 px-4 py-2 rounded bg-black text-white hover:bg-gray-900"
                             onClick={() => onMarkAsAnswer(comment._id, comment.isAnswer || false)}
                         >
                             {comment.isAnswer ? 'Avmarkera som svar' : 'Markera som svar'}

@@ -41,13 +41,22 @@ const CommentForm = ({ threadId, username, onCommentCreated, isLocked }: Comment
   }
 
 return (
-    <div>
+    <div className="mt-4">
         {isLocked ? (
             <p className="text-red-500">Tråden är låst.</p>
         ) : (
-            <form onSubmit={handleSubmit}>
-                    <textarea value={content} onChange={(e) => setContent(e.target.value)} />
-                    <button type="submit">Post comment</button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <textarea 
+                    value={content} 
+                    onChange={(e) => setContent(e.target.value)} 
+                    className="w-full p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
+                <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-black text-white rounded hover:bg-gray-900"
+                >
+                    Kommentera
+                </button>
             </form>
         )}
     </div>
