@@ -2,14 +2,13 @@ import React, { useState } from 'react'
 import { Comment } from '../types'
 
 type CommentFormProps = {
-  threadId: string
-  username: string
-  onCommentCreated?: (newComment: Comment) => void
-  isLocked: boolean
-  hasAnswer: boolean
+    threadId: string
+    username: string
+    onCommentCreated?: (newComment: Comment) => void
+    isLocked: boolean
 }
 
-const CommentForm = ({ threadId, username, onCommentCreated, isLocked, hasAnswer }: CommentFormProps): JSX.Element => {
+const CommentForm = ({ threadId, username, onCommentCreated, isLocked }: CommentFormProps): JSX.Element => {
   const [content, setContent] = useState('')
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -41,25 +40,18 @@ const CommentForm = ({ threadId, username, onCommentCreated, isLocked, hasAnswer
     }
   }
 
-  return (
+return (
     <div>
-      {isLocked ? (
-        <p className="text-red-500">Tråden är låst.</p>
-      ) : hasAnswer ? (
-        <p className="text-red-500">Du kan inte kommentera, tråden har ett svar.</p>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <textarea 
-            value={content} 
-            onChange={(e) => setContent(e.target.value)} 
-            placeholder="Lägg till kommentar..." 
-            disabled={isLocked || hasAnswer} 
-          />
-          <button type="submit" disabled={isLocked || hasAnswer}>Post comment</button>
-        </form>
-      )}
+        {isLocked ? (
+            <p className="text-red-500">Tråden är låst.</p>
+        ) : (
+            <form onSubmit={handleSubmit}>
+                    <textarea value={content} onChange={(e) => setContent(e.target.value)} />
+                    <button type="submit">Post comment</button>
+            </form>
+        )}
     </div>
-  )
+)
 }
 
 export default CommentForm

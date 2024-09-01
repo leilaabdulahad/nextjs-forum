@@ -5,6 +5,8 @@ import Detailpage from './_components/detail-page'
 import { Thread, Comment } from '@/types'
 import { useUser } from '@clerk/nextjs'
 
+
+
 function DetailsPage(): JSX.Element {
   const params = useParams<{ id: string }>() || { id: '' }
   const id = params.id
@@ -62,43 +64,50 @@ function DetailsPage(): JSX.Element {
   }
 
   const handleCommentMarkAsAnswer = async (commentId: string) => {
-    if (!thread) return;
-    const updatedComments = comments.map(comment =>
-      comment._id === commentId
-        ? { ...comment, isAnswer: !comment.isAnswer }
-        : { ...comment, isAnswer: false }
-    );
-    
+    if (!thread || thread.category !== 'QNA') return; // Only allow marking in Q&A threads
+
     try {
-      const response = await fetch(`/api/threads/${thread._id}`, {
+      // Find the comment that needs to be marked/unmarked as answer
+      const commentToMark = thread.comments.find(comment => comment._id === commentId);
+      if (!commentToMark) return;
+
+      // Toggle the isAnswer status of the comment
+      const newIsAnswerStatus = !commentToMark.isAnswer;
+
+      const response = await fetch(`/api/threads/${thread._id}/comments/markAsAnswer`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          comments: updatedComments,
-          isLocked: true
-        }),
+        body: JSON.stringify({ commentId, isAnswer: newIsAnswerStatus }),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to update thread');
+        throw new Error('Failed to mark comment as answer');
       }
-      
-      const updatedThread: Thread = await response.json();
-      setThread(updatedThread);
-      setComments(updatedThread.comments);
+
+      // Update the local state to reflect the change
+      setThread(prevThread => {
+        if (!prevThread) return null;
+
+        // Map through the comments and update the isAnswer status of the marked comment
+        const updatedComments = prevThread.comments.map(comment =>
+          comment._id === commentId ? { ...comment, isAnswer: newIsAnswerStatus } : comment
+        );
+
+        return { ...prevThread, comments: updatedComments };
+      });
     } catch (error) {
       console.error('Error marking comment as answer:', error);
     }
   };
+  
 
   const userUsername = user?.username || ''
 
   return thread ? (
     <Detailpage
       thread={thread}
-      comments={comments}
       onThreadUpdate={handleThreadUpdate}
       onCommentCreate={handleCommentCreate}
       userUsername={userUsername}
