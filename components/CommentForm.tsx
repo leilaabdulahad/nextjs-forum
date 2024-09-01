@@ -41,7 +41,7 @@ const CommentForm = ({ threadId, username, onCommentCreated }: CommentFormProps)
     return (
         <form onSubmit={handleSubmit}>
             <textarea value={content} onChange={(e) => setContent(e.target.value)} />
-            <button type="submit">Post Comment</button>
+            <button type="submit">Post comment</button>
         </form>
     )
 }

@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { content, username } = req.body
-      const comment = new Comment({ content, username, thread: id }) 
+      const comment = new Comment({ content, username, threadId: id }) 
       await comment.save()
 
       const thread = await Thread.findById(id)
@@ -25,6 +25,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } catch (error) {
       res.status(500).json({ message: 'Error creating comment', error })
     }
+  } else if (req.method === 'PUT') {
+    const { commentId, isAnswer } = req.body
+
+    if (typeof isAnswer === 'boolean') {
+      try {
+        await Comment.updateMany({ threadId: id, isAnswer: true }, { isAnswer: false }) // Unmark any previous answer
+        const updatedComment = await Comment.findByIdAndUpdate(commentId, { isAnswer }, { new: true })
+
+        res.status(200).json(updatedComment)
+      } catch (error) {
+        res.status(500).json({ message: 'Error updating comment', error })
+      }
+    } else {
+      res.status(400).json({ message: 'Invalid request' })
+    }
   } else if (req.method === 'GET') {
     try {
       const thread = await Thread.findById(id).populate('comments')
@@ -37,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(500).json({ message: 'Error fetching comments', error })
     }
   } else {
-    res.setHeader('Allow', ['POST', 'GET'])
+    res.setHeader('Allow', ['POST', 'GET', 'PUT'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   }
 }

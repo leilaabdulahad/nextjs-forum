@@ -6,10 +6,10 @@ import CommentForm from '../../../../components/CommentForm'
 import CommentList from '@/components/CommentList'
 
 type DetailpageProps = {
-  thread: Thread
-  onThreadUpdate: (updatedThread: Thread) => void
-  userUsername?: string
-}
+  thread: Thread;
+  onThreadUpdate: (updatedThread: Thread) => void;
+  userUsername?: string;
+};
 
 function Detailpage({
   thread,
@@ -20,14 +20,44 @@ function Detailpage({
   const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
-    fetch(`/api/threads/${thread._id}/comments`)
-      .then(response => response.json())
-      .then(setComments)
-  }, [thread._id])
+    const fetchComments = async () => {
+      const response = await fetch(`/api/threads/${thread._id}/comments`);
+      const fetchedComments: Comment[] = await response.json();
+      setComments(fetchedComments);
+    };
+
+    fetchComments();
+  }, [thread._id]);
 
   const handleCommentCreated = (newComment: Comment) => {
-    setComments(prevComments => [...prevComments, newComment])
+    setComments((prevComments) => [...prevComments, newComment])
   }
+
+  const handleCommentMarkAsAnswer = async (commentId: string, isAnswer: boolean) => {
+    // Check if the thread is of type Q&A
+    if (thread.category !== 'QNA') return;
+
+    try {
+      const response = await fetch(`/api/threads/${thread._id}/comments/markAsAnswer`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ commentId, isAnswer: !isAnswer }), 
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to mark comment as answer')
+      }
+
+      const updatedCommentsResponse = await fetch(`/api/threads/${thread._id}/comments`);
+      const updatedComments: Comment[] = await updatedCommentsResponse.json();
+      setComments(updatedComments)
+    } catch (error) {
+      console.error('Error marking comment as answer:', error)
+    }
+  }
+  
 
   if (!user || !user.username) {
     return <p>Please log in to view this page</p>
@@ -42,15 +72,23 @@ function Detailpage({
       </p>
 
       {thread.username === userUsername && (
-        <EditThread 
-          thread={thread} 
-          userUsername={userUsername} 
-          onUpdateThread={onThreadUpdate} 
+        <EditThread
+          thread={thread}
+          userUsername={userUsername}
+          onUpdateThread={onThreadUpdate}
         />
       )}
 
-      <CommentList comments={comments} /> 
-      <CommentForm threadId={thread._id} username={user.username} onCommentCreated={handleCommentCreated} /> 
+      <CommentList 
+        comments={comments} 
+        onMarkAsAnswer={handleCommentMarkAsAnswer} 
+        isQna={thread.category === 'QNA'} 
+      />
+      <CommentForm
+        threadId={thread._id}
+        username={user.username}
+        onCommentCreated={handleCommentCreated}
+      />
     </div>
   )
 }
