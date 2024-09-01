@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { Comment } from '../types'
 
 type CommentFormProps = {
-    threadId: string
-    username: string
-    onCommentCreated?: (newComment: Comment) => void
-    isLocked: boolean
+  threadId: string
+  username: string
+  onCommentCreated?: (newComment: Comment) => void
+  isLocked: boolean
+  hasAnswer: boolean 
 }
 
 const CommentForm = ({ threadId, username, onCommentCreated, isLocked }: CommentFormProps): JSX.Element => {
