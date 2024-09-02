@@ -73,8 +73,11 @@ function Detailpage({
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">{thread.title}</h1>
       <p>{thread.description}</p>
+      <p className="text-sm text-gray-500 mt-2">
+        {thread.username} 
+      </p>
       <p className="text-sm text-gray-500 mb-4">
-        Created by {thread.username} on {new Date(thread.creationDate).toLocaleDateString()}
+        {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
       </p>
       {thread.username === userUsername && (
         <EditThread

@@ -25,8 +25,11 @@ const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => 
             </h2>
           </Link>
           <p>{thread.description}</p>
-          <p className="text-sm text-gray-500">
-            Created by {thread.username} on {new Date(thread.creationDate).toLocaleDateString()}
+            <p className="text-sm text-gray-500 mt-2">
+              {thread.username} 
+            </p>  
+          <p className="text-sm text-gray-500 mb-4">
+            {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
           </p>
           {user?.username === thread.username && (
             <button
