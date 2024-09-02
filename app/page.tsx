@@ -28,7 +28,7 @@ const Home = () => {
   }, [])
 
   const handleCreateThread = (newThread: Thread) => {
-    const updatedThreads = [...threads, newThread]
+    const updatedThreads = [newThread, ...threads]
     setThreads(updatedThreads)
   }
   
