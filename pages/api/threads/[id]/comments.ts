@@ -14,6 +14,8 @@ interface IComment extends Document {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
 
+  res.setHeader('Cache-Control', 'no-store')
+
   const { id } = req.query
 
   if (req.method === 'POST') {

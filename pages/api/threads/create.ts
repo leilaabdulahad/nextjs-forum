@@ -3,7 +3,9 @@ import dbConnect from '../../../lib/dbConnect';
 import Thread from '../../../models/Thread';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await dbConnect();
+  await dbConnect()
+
+  res.setHeader('Cache-Control', 'no-store')
 
   if (req.method === 'POST') {
     try {
