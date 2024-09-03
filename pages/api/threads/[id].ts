@@ -5,6 +5,8 @@ import Thread from '../../../models/Thread'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
 
+  res.setHeader('Cache-Control', 'no-store')
+
   const { id } = req.query
 
   if (req.method === 'GET') {
