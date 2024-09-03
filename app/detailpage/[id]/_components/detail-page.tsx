@@ -1,17 +1,16 @@
-import React from 'react';
-import { Thread, Comment } from '../../../../types';
-import { useUser } from '@clerk/nextjs';
-import { useEffect, useState } from 'react';
-import EditThread from '@/components/EditThread';
-import CommentForm from '../../../../components/CommentForm';
-import CommentList from '../../../../components/CommentList';
+import { Thread, Comment } from '@/types'
+import { useUser } from '@clerk/nextjs'
+import { useEffect, useState } from 'react'
+import EditThread from '@/components/EditThread'
+import CommentForm from '@/components/CommentForm'
+import CommentList from '@/components/CommentList'
 
 type DetailpageProps = {
-    thread: Thread;
-    onThreadUpdate: (updatedThread: Thread) => void;
-    onCommentCreate: (newComment: Comment) => void;
+    thread: Thread
+    onThreadUpdate: (updatedThread: Thread) => void
+    onCommentCreate: (newComment: Comment) => void
     userUsername?: string;
-    onCommentMarkAsAnswer: (commentId: string) => void;
+    onCommentMarkAsAnswer: (commentId: string) => void
 };
 
 function Detailpage({
@@ -26,17 +25,17 @@ function Detailpage({
 
     useEffect(() => {
         const fetchComments = async () => {
-            const response = await fetch(`/api/threads/${thread._id}/comments`);
-            const fetchedComments: Comment[] = await response.json();
-            setComments(fetchedComments);
+            const response = await fetch(`/api/threads/${thread._id}/comments`)
+            const fetchedComments: Comment[] = await response.json()
+            setComments(fetchedComments)
         };
 
-        fetchComments();
-    }, [thread._id]);
+        fetchComments()
+    }, [thread._id])
 
     const handleCommentCreated = (newComment: Comment) => {
-        setComments((prevComments) => [...prevComments, newComment]);
-    };
+        setComments((prevComments) => [...prevComments, newComment])
+    }
 
     const handleReplyCreated = (newReply: Comment, parentCommentId: string) => {
         setComments((prevComments) => {
@@ -44,16 +43,16 @@ function Detailpage({
                 if (comment._id === parentCommentId) {
                     return {
                         ...comment,
-                        replies: [...(comment.replies || []), newReply], // Append new reply to the parent comment
-                    };
+                        replies: [...(comment.replies || []), newReply],
+                    }
                 }
-                return comment;
-            });
-        });
-    };
+                return comment
+            })
+        })
+    }
 
     const handleCommentMarkAsAnswer = async (commentId: string, isAnswer: boolean) => {
-        // Check if the thread is of type Q&A
+
         if (thread.category !== 'QNA') return;
 
         try {
@@ -62,21 +61,21 @@ function Detailpage({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ commentId, isAnswer }), // Sending the current status
-            });
+                body: JSON.stringify({ commentId, isAnswer }),
+            })
 
             if (!response.ok) {
-                throw new Error('Failed to mark comment as answer');
+                throw new Error('Failed to mark comment as answer')
             }
 
-            // Fetch updated comments
-            const updatedCommentsResponse = await fetch(`/api/threads/${thread._id}/comments`);
-            const updatedComments: Comment[] = await updatedCommentsResponse.json();
-            setComments(updatedComments); // Update comments state with the fetched comments
+            //fetches updated comments
+            const updatedCommentsResponse = await fetch(`/api/threads/${thread._id}/comments`)
+            const updatedComments: Comment[] = await updatedCommentsResponse.json()
+            setComments(updatedComments)
         } catch (error) {
-            console.error('Error marking comment as answer:', error);
+            console.error('Error marking comment as answer:', error)
         }
-    };
+    }
 
     if (!user || !user.username) {
         return <p>Please log in to view this page</p>;
@@ -105,7 +104,7 @@ function Detailpage({
                 threadId={thread._id}
                 username={user.username}
                 isLocked={thread.isLocked}
-                onReplyCreated={handleReplyCreated} // Pass the function here
+                onReplyCreated={handleReplyCreated}
             />
 
             <CommentForm
@@ -116,7 +115,7 @@ function Detailpage({
                 hasAnswer={comments.some(comment => comment.isAnswer)}
             />
         </div>
-    );
+    )
 }
 
-export default Detailpage;
+export default Detailpage

@@ -1,15 +1,14 @@
-import React from 'react';
-import { Comment } from '../types';
-import ReplyForm from './ReplyForm';
+import { Comment } from '../types'
+import ReplyForm from './ReplyForm'
 
 type CommentListProps = {
-    comments: Comment[];
-    onMarkAsAnswer: (commentId: string, isAnswer: boolean) => void;
-    onReplyCreated: (newReply: Comment, parentCommentId: string) => void;
-    isQna: boolean;
-    threadId: string;
-    username: string;
-    isLocked: boolean;
+    comments: Comment[]
+    onMarkAsAnswer: (commentId: string, isAnswer: boolean) => void
+    onReplyCreated: (newReply: Comment, parentCommentId: string) => void
+    isQna: boolean
+    threadId: string
+    username: string
+    isLocked: boolean
 };
 
 function CommentList({
@@ -35,19 +34,18 @@ function CommentList({
                             onClick={() => onMarkAsAnswer(comment._id, !comment.isAnswer)}
                             className="mt-2 px-4 py-2 rounded bg-black text-white hover:bg-gray-900"
                         >
-                            {comment.isAnswer ? 'Unmark as Answer' : 'Mark as Answer'}
+                            {comment.isAnswer ? 'Avmarkera' : 'Markera som svar'}
                         </button>
                     )}
 
-                    {/* Reply Form for the current comment */}
                     <ReplyForm
                         threadId={threadId}
                         username={username}
                         parentCommentId={comment._id}
-                        onReplyCreated={onReplyCreated} // This now matches the expected prop
+                        onReplyCreated={onReplyCreated} 
                     />
 
-                    {/* Render replies if available */}
+                    {/* renders replies if available */}
                     {comment.replies && comment.replies.length > 0 && (
                         <ul className="ml-4 mt-2">
                             {comment.replies.map((reply) => (
@@ -64,7 +62,7 @@ function CommentList({
                 </li>
             ))}
         </ul>
-    );
+    )
 }
 
-export default CommentList;
+export default CommentList

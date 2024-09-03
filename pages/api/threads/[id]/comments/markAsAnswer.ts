@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import Thread from '../../../../../models/Thread'
+import Thread from '@/models/Thread'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {

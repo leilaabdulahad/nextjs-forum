@@ -5,18 +5,15 @@ export type Comment = {
   creationDate: string;
   username: string; 
   isAnswer?: boolean;
-  parentCommentId?: string; // New field for nested comments
-  replies?: Comment[]; // Add replies field
+  parentCommentId?: string; 
+  replies?: Comment[]; 
 }
-
-
-// types.ts or wherever your types are defined
 
 export type Reply = {
   content: string;
   username: string;
-  parentCommentId: string; // This is specific to the reply
-  isAnswer?: boolean; // Optional, as you may not want to include this for all replies
+  parentCommentId: string; 
+  isAnswer?: boolean;
 };
 
 

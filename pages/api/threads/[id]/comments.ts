@@ -5,10 +5,10 @@ import Thread from '@/models/Thread'
 import Comment from '@/models/Comment'
 
 interface IComment extends Document {
-  content: string;
-  username: string;
-  thread: string;
-  isAnswer?: boolean;
+  content: string
+  username: string
+  thread: string
+  isAnswer?: boolean
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -20,21 +20,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'POST') {
     try {
-      const { content, username, parentCommentId } = req.body; // Get parentCommentId from the request body
-      const comment = new Comment({ content, username, threadId: id, parentCommentId }); // Save parentCommentId
+      const { content, username, parentCommentId } = req.body
+      const comment = new Comment({ content, username, threadId: id, parentCommentId })
   
-      await comment.save();
+      await comment.save()
   
-      const thread = await Thread.findById(id);
+      const thread = await Thread.findById(id)
       if (!thread) {
-        res.status(404).json({ message: 'Thread not found' });
+        res.status(404).json({ message: 'Thread not found' })
       } else {
-        thread.comments.push(comment); 
-        await thread.save();
-        res.status(201).json(comment);
+        thread.comments.push(comment)
+        await thread.save()
+        res.status(201).json(comment)
       }
     } catch (error) {
-      res.status(500).json({ message: 'Error creating comment', error });
+      res.status(500).json({ message: 'Error creating comment', error })
     }
   }
    else if (req.method === 'PUT') {
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (typeof isAnswer === 'boolean') {
       try {
-        await Comment.updateMany({ threadId: id, isAnswer: true }, { isAnswer: false }) // Unmark any previous answer
+        await Comment.updateMany({ threadId: id, isAnswer: true }, { isAnswer: false }) 
         const updatedComment = await Comment.findByIdAndUpdate(commentId, { isAnswer }, { new: true })
 
         res.status(200).json(updatedComment)
@@ -56,15 +56,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const thread = await Thread.findById(id).populate({
         path: 'comments',
-        populate: { path: 'parentCommentId' } // Populate nested comments
+        populate: { path: 'parentCommentId' } 
       });
       if (!thread) {
-        res.status(404).json({ message: 'Thread not found' });
+        res.status(404).json({ message: 'Thread not found' })
       } else {
         res.status(200).json(thread.comments);
       }
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching comments', error });
+      res.status(500).json({ message: 'Error fetching comments', error })
     }
   }
   else {
