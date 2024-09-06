@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Document } from 'mongoose'
 import dbConnect from '@/lib/dbConnect'
 import Thread from '@/models/Thread'
-import Comment from '@/models/Comment'
+import Comment from '@/models/Comment';
 
-interface IComment extends Document {
+type IComment = Document & {
   content: string
   username: string
   thread: string

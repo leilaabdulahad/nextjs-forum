@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 type CreateThreadPayload = Omit<Thread, '_id'> & { comments: [] }
 
-interface CreateThreadProps {
+type CreateThreadProps = {
   onCreate: (thread: Thread) => void
 }
 
