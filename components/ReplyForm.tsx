@@ -6,9 +6,10 @@ type ReplyFormProps = {
   username: string
   parentCommentId: string
   onReplyCreated: (newReply: Comment, parentCommentId: string) => void
+  isLocked: boolean
 }
 
-const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated }: ReplyFormProps): JSX.Element => {
+const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLocked }: ReplyFormProps): JSX.Element => {
   const [content, setContent] = useState('')
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -43,6 +44,10 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated }: Repl
     } catch (error) {
       console.error('Failed to post reply:', error)
     }
+  }
+
+  if(isLocked){
+    return <p className='text-red-500'>Tråden är låst.</p>
   }
 
   return (

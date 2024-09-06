@@ -1,6 +1,7 @@
 import dbConnect from '@/lib/dbConnect'
 import Comment from '@/models/Comment'
 import Thread from '@/models/Thread'
+import React from 'react'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -5,6 +5,7 @@ import CreateThread from '../components/CreateThread'
 import ThreadList from '../components/ThreadList'
 import { Thread } from '../types'
 import { useUser } from '@clerk/nextjs'
+import React from 'react';
 
 const Home = () => {
   const [threads, setThreads] = useState<Thread[]>([])
