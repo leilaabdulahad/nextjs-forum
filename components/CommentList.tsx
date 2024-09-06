@@ -43,9 +43,9 @@ function CommentList({
                         username={username}
                         parentCommentId={comment._id}
                         onReplyCreated={onReplyCreated} 
+                        isLocked={isLocked}
                     />
 
-                    {/* renders replies if available */}
                     {comment.replies && comment.replies.length > 0 && (
                         <ul className="ml-4 mt-2">
                             {comment.replies.map((reply) => (
