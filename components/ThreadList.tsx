@@ -3,7 +3,7 @@ import React from 'react'
 import { Thread } from '../types'
 import { useUser } from '@clerk/nextjs'
 
-interface ThreadListProps {
+type ThreadListProps = {
   threads: Thread[]
   onToggleLock: (threadId: string) => void;
 }
