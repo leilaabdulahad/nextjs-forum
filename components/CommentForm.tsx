@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { Comment } from '../types'
+import { useState } from 'react'
 
 type CommentFormProps = {
   threadId: string

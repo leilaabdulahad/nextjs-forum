@@ -1,6 +1,5 @@
 'use client'
-import React, { useState } from 'react'
-import { Thread, ThreadCategory } from '../types'
+import { useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 

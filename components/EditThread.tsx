@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Thread } from '../types'
+import { useState } from 'react'
 
 type EditThreadProps = {
   thread: Thread;

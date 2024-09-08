@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
-import { Comment } from '../types'
+import { useState } from 'react'
 
 type ReplyFormProps = {
   threadId: string
   username: string
   parentCommentId: string
-  onReplyCreated: (newReply: Comment, parentCommentId: string) => void
+  onReplyCreated: (newReply: CommentType, parentCommentId: string) => void
   isLocked: boolean
 }
 
@@ -13,16 +12,18 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
   const [content, setContent] = useState('')
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const newReply: Comment = {
-      _id: Math.random().toString(36).substring(7), 
+    const newReply: CommentType = {
+      _id: Math.random().toString(36).substring(7), // Generate random ID for demo purposes
+      threadId,
+      parentCommentId,
       content,
       username,
       creationDate: new Date().toISOString(),
       isAnswer: false,
-      replies: [], 
-    }
+      replies: [], // Initially no replies
+    };
 
     try {
       const response = await fetch(`/api/threads/${threadId}/comments/${parentCommentId}/replies`, {
@@ -31,20 +32,19 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content, username, parentCommentId }),
-      })
+      });
 
       if (response.ok) {
-    
-        onReplyCreated(newReply, parentCommentId)
-        setContent('')
+        onReplyCreated(newReply, parentCommentId);
+        setContent('');
       } else {
-        const errorResponse = await response.json()
-        console.error('Failed to post reply:', errorResponse)
+        const errorResponse = await response.json();
+        console.error('Failed to post reply:', errorResponse);
       }
     } catch (error) {
-      console.error('Failed to post reply:', error)
+      console.error('Failed to post reply:', error);
     }
-  }
+  };
 
   if(isLocked){
     return <p className='text-red-500'>Tråden är låst.</p>

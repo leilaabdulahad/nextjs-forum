@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import React from 'react'
-import { Thread } from '../types'
 import { useUser } from '@clerk/nextjs'
 
 type ThreadListProps = {
