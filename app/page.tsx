@@ -1,15 +1,15 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import CreateThread from '../components/CreateThread'
 import ThreadList from '../components/ThreadList'
 import { Thread } from '../types'
-import { useUser } from '@clerk/nextjs'
-import React from 'react';
+import { useUser, useAuth } from '@clerk/nextjs'
+import React from 'react'
 
 const Home = () => {
   const [threads, setThreads] = useState<Thread[]>([])
   const { user } = useUser()
+  const { isSignedIn } = useAuth()
 
   useEffect(() => {
     const fetchThreads = async () => {
@@ -19,7 +19,7 @@ const Home = () => {
           throw new Error('Failed to fetch threads')
         }
         const data: Thread[] = await response.json()
-        setThreads(data)
+        setThreads(data);
       } catch (error) {
         console.error('Error fetching threads:', error)
       }
@@ -30,38 +30,62 @@ const Home = () => {
 
   const handleCreateThread = (newThread: Thread) => {
     const updatedThreads = [newThread, ...threads]
-    setThreads(updatedThreads)
+    setThreads(updatedThreads);
   }
-  
 
-  const toggleThreadLock = async (threadId: string) => {
-    const thread = threads.find(thread => thread._id === threadId)
-    if (thread) {
-      const updatedThread = { ...thread, isLocked: !thread.isLocked }
-      try {
-        const response = await fetch(`/api/threads/${threadId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isLocked: updatedThread.isLocked }),
-        })
-        if (!response.ok) {
-          throw new Error('Response not OK')
-        }
-        const updatedThreadFromServer = await response.json()
-        setThreads(threads.map(thread => thread._id === threadId ? updatedThreadFromServer : thread))
-      } catch (error) {
-        console.error('Error updating thread:', error)
+
+const toggleThreadLock = async (threadId: string) => {
+  const thread = threads.find((thread) => thread._id === threadId)
+  if (thread) {
+    const updatedLockState = !thread.isLocked
+    try {
+      const response = await fetch(`/api/threads/${threadId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user?.id, 
+          isLocked: updatedLockState, 
+        }),
+      })
+      if (!response.ok) {
+        throw new Error('Response not OK')
       }
+      const updatedThreadFromServer = await response.json();
+      setThreads(threads.map((thread) => (thread._id === threadId ? updatedThreadFromServer : thread)))
+    } catch (error) {
+      console.error('Error updating thread:', error)
     }
   }
-  
+}
+
+useEffect(() => {
+  if (isSignedIn && user) {
+    fetch('/api/users/saveUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        clerkId: user.id,
+        username: user.username || user.emailAddresses[0]?.emailAddress,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Saved user:', data);
+      })
+      .catch((error) => console.error('Error saving user:', error))
+  }
+}, [isSignedIn, user])
+
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Skapa tråd</h1>
       <CreateThread onCreate={handleCreateThread} />
       <h2 className="text-xl font-semibold mt-8 mb-4">Alla trådar</h2>
-      <ThreadList threads={threads} onToggleLock={toggleThreadLock} /> 
+      <ThreadList threads={threads} onToggleLock={toggleThreadLock} user={user} />
+
     </div>
   )
 }

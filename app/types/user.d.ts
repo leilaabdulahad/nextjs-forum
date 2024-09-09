@@ -1,5 +1,6 @@
- type User = {
-    _id: string;
-    username: string;
-    isModerator: boolean;
-  }
+type User = {
+  _id: string
+  username: string
+  clerkId: string
+  isModerator: boolean
+}
