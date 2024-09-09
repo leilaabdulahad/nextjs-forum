@@ -9,6 +9,7 @@ const threadSchema = new mongoose.Schema({
   comments: [commentSchema], 
   username: { type: String, required: true },
   isLocked: { type: Boolean, default: false },
+  isCensored: { type: Boolean, default: false }
 })
 
 const Thread = mongoose.models.Thread || mongoose.model('Thread', threadSchema)
