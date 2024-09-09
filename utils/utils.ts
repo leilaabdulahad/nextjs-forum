@@ -8,8 +8,9 @@ export function checkInappropriateWords(input: string | CommentType): [string, b
         const newWords = words.map(word => {
             if (censoredWords.includes(word)) {
                 isCensored = true;
-                return '*'.repeat(word.length)
-            return word
+                return '*'.repeat(word.length);
+            }
+            return word;
         })
 
         return [newWords.join(' '), isCensored]
@@ -21,9 +22,9 @@ export function checkInappropriateWords(input: string | CommentType): [string, b
         const newWords = words.map(word => {
             if (censoredWords.includes(word)) {
                 isCensored = true;
-                return '*'.repeat(word.length)
+                return '*'.repeat(word.length);
             }
-            return word
+            return word;
         })
 
         comment.content = newWords.join(' ')
