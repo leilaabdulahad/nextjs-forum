@@ -21,8 +21,8 @@ function Detailpage({
   userUsername,
   onCommentMarkAsAnswer,
 }: DetailpageProps): JSX.Element {
-  const { user } = useUser();
-  const [comments, setComments] = useState<Comment[]>([])
+  const { user } = useUser()
+  const [comments, setComments] = useState<Comment[]>([]);
   const [censoredTitle, titleIsCensored] = checkInappropriateWords(thread.title)
   const [censoredDescription, descriptionIsCensored] = checkInappropriateWords(thread.description)
   thread.isCensored = titleIsCensored || descriptionIsCensored
@@ -48,9 +48,9 @@ function Detailpage({
           return {
             ...comment,
             replies: [...(comment.replies || []), newReply],
-          }
+          };
         }
-        return comment
+        return comment;
       })
     })
   }
@@ -80,7 +80,7 @@ function Detailpage({
   }
 
   if (!user || !user.username) {
-    return <p>Please log in to view this page</p>;
+    return <p>Please log in to view this page</p>
   }
 
   return (
@@ -91,7 +91,7 @@ function Detailpage({
       <p className="text-sm text-gray-500 mb-4">
         {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
       </p>
-      {thread.username === userUsername && (
+      {(thread.username === userUsername || user?.publicMetadata?.isModerator) && (
         <EditThread thread={thread} userUsername={userUsername} onUpdateThread={onThreadUpdate} />
       )}
 
@@ -100,7 +100,7 @@ function Detailpage({
         onMarkAsAnswer={handleCommentMarkAsAnswer}
         isQna={thread.category === 'QNA'} 
         threadId={thread._id}
-        username={thread.username} 
+        username={thread.username}
         isLocked={thread.isLocked}
         onReplyCreated={handleReplyCreated}
       />
@@ -116,4 +116,5 @@ function Detailpage({
   )
 }
 
-export default Detailpage
+export default Detailpage;
+

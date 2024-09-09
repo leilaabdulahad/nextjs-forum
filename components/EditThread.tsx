@@ -1,11 +1,10 @@
-'use client'
-
 import { useState } from 'react'
+import { useUser } from '@clerk/nextjs'
 
 type EditThreadProps = {
-  thread: Thread;
+  thread: Thread
   userUsername: string | undefined;
-  onUpdateThread: (updatedThread: Thread) => void;
+  onUpdateThread: (updatedThread: Thread) => void
 }
 
 function EditThread({
@@ -13,11 +12,14 @@ function EditThread({
   userUsername,
   onUpdateThread,
 }: EditThreadProps): JSX.Element {
+  const { user } = useUser()
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(thread.title)
   const [description, setDescription] = useState(thread.description)
 
-  if (thread.username !== userUsername) {
+  const canEdit = thread.username === userUsername || user?.publicMetadata?.isModerator
+
+  if (!canEdit) {
     return <p>Du har inte rätt att redigera denna tråd.</p>
   }
 
@@ -29,14 +31,14 @@ function EditThread({
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description }),
-      })
+      });
 
       if (!response.ok) {
         throw new Error('Failed to update thread')
       }
 
       const updatedThreadFromServer = await response.json()
-      onUpdateThread(updatedThreadFromServer)
+      onUpdateThread(updatedThreadFromServer);
       setIsEditing(false)
     } catch (error) {
       console.error('Error updating thread:', error)
