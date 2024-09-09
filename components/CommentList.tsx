@@ -1,4 +1,5 @@
 import ReplyForm from './ReplyForm'
+import { checkInappropriateWords } from '@/utils/utils' 
 
 type CommentListProps = {
   comments: CommentType[]
@@ -8,7 +9,7 @@ type CommentListProps = {
   threadId: string
   username: string
   isLocked: boolean
-};
+}
 
 function CommentList({
   comments,
@@ -21,45 +22,51 @@ function CommentList({
 }: CommentListProps) {
   return (
     <ul className="space-y-4">
-      {comments.map((comment) => (
-        <li key={comment._id} className={`p-4 border rounded-lg ${comment.isAnswer ? 'bg-green-200' : ''}`}>
-          <p className="text-lg font-semibold">{comment.content}</p>
-          <p className="text-sm text-gray-500">{comment.username}</p>
-          <p className="text-sm text-gray-400">
-            {new Date(comment.creationDate).toLocaleDateString()}
-          </p>
-          {isQna && (
-            <button
-              onClick={() => onMarkAsAnswer(comment._id, !comment.isAnswer)}
-              className="mt-2 px-4 py-2 rounded bg-black text-white hover:bg-gray-900"
-            >
-              {comment.isAnswer ? 'Avmarkera' : 'Markera som svar'}
-            </button>
-          )}
+      {comments.map((comment) => {
+        checkInappropriateWords(comment)
+        return (
+          <li key={comment._id} className={`p-4 border rounded-lg ${comment.isAnswer ? 'bg-green-200' : ''}`}>
+            <p className="text-lg font-semibold">{comment.isCensored ? 'This comment has been censored.' : comment.content}</p>
+            <p className="text-sm text-gray-500">{comment.username}</p>
+            <p className="text-sm text-gray-400">
+              {new Date(comment.creationDate).toLocaleDateString()}
+            </p>
+            {isQna && (
+              <button
+                onClick={() => onMarkAsAnswer(comment._id, !comment.isAnswer)}
+                className="mt-2 px-4 py-2 rounded bg-black text-white hover:bg-gray-900"
+              >
+                {comment.isAnswer ? 'Unmark as answer' : 'Mark as answer'}
+              </button>
+            )}
 
-          <ReplyForm
-            threadId={threadId}
-            username={username}
-            parentCommentId={comment._id}
-            onReplyCreated={onReplyCreated} 
-            isLocked={isLocked}
-          />
+            <ReplyForm
+              threadId={threadId}
+              username={username}
+              parentCommentId={comment._id}
+              onReplyCreated={onReplyCreated} 
+              isLocked={isLocked}
+            />
 
-          {comment.replies && comment.replies.length > 0 && (
-            <ul className="ml-4 mt-2">
-              {comment.replies.map((reply) => (
-                <li key={reply._id} className="p-2 border-l-2 border-gray-300">
-                  <p>{reply.content}</p>
-                  <p className="text-sm text-gray-500">{reply.username}</p>
-                  <p className="text-sm text-gray-400">
-                    {new Date(reply.creationDate).toLocaleDateString()}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </li>
-      ))}
+            {comment.replies && comment.replies.length > 0 && (
+              <ul className="ml-4 mt-2">
+                {comment.replies.map((reply) => {
+                  checkInappropriateWords(reply);
+                  return (
+                    <li key={reply._id} className="p-2 border-l-2 border-gray-300">
+                      <p>{reply.isCensored ? 'This comment has been censored.' : reply.content}</p>
+                      <p className="text-sm text-gray-500">{reply.username}</p>
+                      <p className="text-sm text-gray-400">
+                        {new Date(reply.creationDate).toLocaleDateString()}
+                      </p>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </li>
+        )
+      })}
     </ul>
   )
 }
