@@ -101,15 +101,17 @@ function Detailpage({
                 />
             )}
 
-            <CommentList
-                comments={comments}
-                onMarkAsAnswer={handleCommentMarkAsAnswer}
-                isQna={thread.category === 'QNA'}
-                threadId={thread._id}
-                username={user.username}
-                isLocked={thread.isLocked}
-                onReplyCreated={handleReplyCreated}
-            />
+<CommentList
+    comments={comments}
+    onMarkAsAnswer={handleCommentMarkAsAnswer}
+    isQna={thread.category === 'QNA'}
+    threadId={thread._id}
+    username={user.username}
+    isLocked={thread.isLocked}
+    onReplyCreated={handleReplyCreated}
+/>
+
+
 
             <CommentForm
                 threadId={thread._id}

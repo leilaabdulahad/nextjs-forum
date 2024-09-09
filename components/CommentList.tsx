@@ -1,29 +1,29 @@
-import ReplyForm from './ReplyForm'
-import { checkInappropriateWords } from '@/utils/utils' 
-
-type CommentListProps = {
-  comments: CommentType[]
-  onMarkAsAnswer: (commentId: string, isAnswer: boolean) => void
-  onReplyCreated: (newReply: CommentType, parentCommentId: string) => void
-  isQna: boolean
-  threadId: string
-  username: string
-  isLocked: boolean
-}
+import ReplyForm from './ReplyForm';
+import { checkInappropriateWords } from '@/utils/utils'; 
+import { useUser } from '@clerk/nextjs';
 
 function CommentList({
   comments,
   onMarkAsAnswer,
   isQna,
-  threadId,
+  threadId, // Ensure this is passed correctly
   username,
   isLocked,
   onReplyCreated,
 }: CommentListProps) {
+  const { user } = useUser(); // Get the user data
+  
   return (
     <ul className="space-y-4">
       {comments.map((comment) => {
-        checkInappropriateWords(comment)
+        checkInappropriateWords(comment);
+
+        // Check if user is thread creator or moderator
+        const canMarkAsAnswer = (username === comment.username || user?.isModerator); 
+        
+        // Log canMarkAsAnswer for debugging
+        console.log('Can Mark as Answer:', canMarkAsAnswer);
+
         return (
           <li key={comment._id} className={`p-4 border rounded-lg ${comment.isAnswer ? 'bg-green-200' : ''}`}>
             <p className="text-lg font-semibold">{comment.isCensored ? 'This comment has been censored.' : comment.content}</p>
@@ -31,7 +31,7 @@ function CommentList({
             <p className="text-sm text-gray-400">
               {new Date(comment.creationDate).toLocaleDateString()}
             </p>
-            {isQna && (
+            {isQna && canMarkAsAnswer && ( // Check for isQna and canMarkAsAnswer
               <button
                 onClick={() => onMarkAsAnswer(comment._id, !comment.isAnswer)}
                 className="mt-2 px-4 py-2 rounded bg-black text-white hover:bg-gray-900"
@@ -60,15 +60,15 @@ function CommentList({
                         {new Date(reply.creationDate).toLocaleDateString()}
                       </p>
                     </li>
-                  )
+                  );
                 })}
               </ul>
             )}
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }
 
-export default CommentList
+export default CommentList;
