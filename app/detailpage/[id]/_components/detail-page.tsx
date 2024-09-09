@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import EditThread from '@/components/EditThread'
 import CommentForm from '@/components/CommentForm'
 import CommentList from '@/components/CommentList'
+import { checkInappropriateWords } from '@/utils/utils'
 
 type DetailpageProps = {
     thread: Thread
@@ -22,6 +23,9 @@ function Detailpage({
 }: DetailpageProps): JSX.Element {
     const { user } = useUser();
     const [comments, setComments] = useState<Comment[]>([]);
+    const [censoredTitle, titleIsCensored] = checkInappropriateWords(thread.title)
+    const [censoredDescription, descriptionIsCensored] = checkInappropriateWords(thread.description)
+    thread.isCensored = titleIsCensored || descriptionIsCensored
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -83,8 +87,8 @@ function Detailpage({
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">{thread.title}</h1>
-            <p>{thread.description}</p>
+            <h1 className="text-2xl font-bold mb-4">{censoredTitle}</h1>
+            <p>{censoredDescription}</p>
             <p className="text-sm text-gray-500 mt-2">{thread.username}</p>
             <p className="text-sm text-gray-500 mb-4">
                 {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}

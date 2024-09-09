@@ -5,6 +5,7 @@ const replySchema = new mongoose.Schema({
   creationDate: { type: Date, default: Date.now },
   username: { type: String, required: true },
   isAnswer: { type: Boolean, default: false },
+  isCensored: { type: Boolean, default: false }
 });
 
 export const commentSchema = new mongoose.Schema({
