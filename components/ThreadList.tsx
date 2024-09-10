@@ -34,7 +34,7 @@ const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => 
               onClick={() => onToggleLock(thread._id)}
               className={`mt-2 px-4 py-2 rounded ${thread.isLocked ? 'bg-red-600' : 'bg-green-600'} text-white`}
             >
-              {thread.isLocked ? 'Unlock Thread' : 'Lock Thread'}
+              {thread.isLocked ? 'Lås upp' : 'Lås inlägget'}
             </button>
           )}
         </div>

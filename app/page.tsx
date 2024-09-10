@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import CreateThread from '../components/CreateThread'
 import ThreadList from '../components/ThreadList'
-import { Thread } from '../types'
 import { useUser, useAuth } from '@clerk/nextjs'
 import React from 'react'
 
@@ -19,8 +18,8 @@ const Home = () => {
           throw new Error('Failed to fetch threads')
         }
         let data: Thread[] = await response.json()
-        data = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        setThreads(data);
+        data = data.sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
+        setThreads(data)
       } catch (error) {
         console.error('Error fetching threads:', error)
       }
@@ -85,7 +84,10 @@ useEffect(() => {
       <h1 className="text-2xl font-bold mb-4 text-center">Skapa tråd</h1>
       <CreateThread onCreate={handleCreateThread} />
       <h2 className="text-xl font-semibold mt-8 mb-4">Alla trådar</h2>
-      <ThreadList threads={threads} onToggleLock={toggleThreadLock} user={user} />
+      <ThreadList 
+        threads={threads} 
+        onToggleLock={toggleThreadLock} 
+         />
 
     </div>
   )

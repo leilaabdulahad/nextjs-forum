@@ -1,14 +1,14 @@
 
- type ThreadCategory = "THREAD" | "QNA"
+type ThreadCategory = "THREAD" | "QNA" 
 
- type Thread = {
+type Thread = {
   _id: string
   title: string
-  category: ThreadCategory
-  creationDate: string
   description: string
-  comments: Comment[]
   username: string
+  creationDate: string
+  category: string
   isLocked: boolean
-  isCensored: boolean
+  isCensored?: boolean | undefined
+  comments?: CommentType[]
 }

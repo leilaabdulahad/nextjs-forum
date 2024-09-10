@@ -14,8 +14,8 @@ const isUser = (user: unknown): user is { publicMetadata?: { isModerator?: boole
     'publicMetadata' in user &&
     typeof (user as { publicMetadata?: { isModerator?: boolean } }).publicMetadata === 'object' &&
     'username' in user
-  );
-};
+  )
+}
 
 
 function EditThread({
@@ -28,7 +28,7 @@ function EditThread({
   const [title, setTitle] = useState(thread.title)
   const [description, setDescription] = useState(thread.description)
 
-  const canEdit = thread.username === userUsername || (isUser(user) && user.publicMetadata?.isModerator);
+  const canEdit = thread.username === userUsername || (isUser(user) && user.publicMetadata?.isModerator)
 
   if (!canEdit) {
     return <p>Du har inte rätt att redigera denna tråd.</p>

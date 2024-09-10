@@ -27,22 +27,21 @@ const Navbar = (): JSX.Element => {
           </Link>
         </div>
 
-    <nav className="hidden md:flex space-x-8 font-sans font-bold">
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      {navLinks.map((link) => (
-        <Link href={link.path} key={link.name}>
-          <div className="flex items-center space-x-1">
-            <div>{link.name}</div>
-            {link.isSearch && <FaSearch className="text-gray-400" size={14} />}
-          </div>
-        </Link>
-      ))}
-    </nav>
+        <nav className="hidden md:flex space-x-8 font-sans font-bold">
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            {navLinks.map((link) => (
+              <Link href={link.path} key={link.name}>
+                <div className="flex items-center space-x-1">
+                  <div>{link.name}</div>
+                </div>
+              </Link>
+            ))}
+          </nav>
 
         <div className="md:hidden flex items-center">
           <FaBars className="text-2xl cursor-pointer" onClick={toggleMobileMenu} />
@@ -61,7 +60,6 @@ const Navbar = (): JSX.Element => {
             <Link href={link.path} key={link.name}>
               <div onClick={toggleMobileMenu} className="p-2 hover:bg-gray-700 rounded">
                 {link.name}
-                {link.isSearch && <FaSearch className="text-gray-400" size={14} />}
               </div>
             </Link>
           ))}

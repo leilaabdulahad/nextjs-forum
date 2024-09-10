@@ -3,7 +3,7 @@ import { useState } from 'react'
 type CommentFormProps = {
   threadId: string
   username: string
-  onCommentCreated?: (newComment: Comment) => void
+  onCommentCreated?: (newComment: CommentType) => void
   isLocked: boolean
   hasAnswer: boolean 
 }
@@ -53,14 +53,13 @@ return (
                 />
                 <button 
                     type="submit" 
-                    className="px-4 py-2 bg-black text-white rounded hover:bg-gray-900"
-                >
+                    className="px-4 py-2 bg-black text-white rounded hover:bg-gray-900">
                     Kommentera
                 </button>
             </form>
         )}
     </div>
-)
+  )
 }
 
 export default CommentForm

@@ -22,8 +22,9 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
       username,
       creationDate: new Date().toISOString(),
       isAnswer: false,
-      replies: [], // Initially no replies
-    };
+      replies: [], 
+      isCensored: false,
+    }
 
     try {
       const response = await fetch(`/api/threads/${threadId}/comments/${parentCommentId}/replies`, {
@@ -56,9 +57,11 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
         value={content}
         onChange={(e) => setContent(e.target.value)}
         required
-        placeholder="Write a reply..."
+        placeholder=""
+        className="w-full mt-6 p-2 border border-gray-300 rounded-md"
+
       />
-      <button type="submit">Reply</button>
+      <button type="submit" className="mt-2 px-4 py-2 bg-black text-white rounded-md">Reply</button>
     </form>
   )
 }

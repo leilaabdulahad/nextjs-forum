@@ -1,28 +1,48 @@
-import { Thread, Comment } from '@/types'
 import { useUser } from '@clerk/nextjs'
 import { useEffect, useState } from 'react'
+import { NextPage } from 'next'
 import EditThread from '@/components/EditThread'
 import CommentForm from '@/components/CommentForm'
-import CommentList from '@/components/CommentList'
+import CommentList from '@/components/commentList'
 import { checkInappropriateWords } from '@/utils/utils'
 
-type DetailpageProps = {
-  thread: Thread
-  onThreadUpdate: (updatedThread: Thread) => void
-  onCommentCreate: (newComment: Comment) => void
-  userUsername?: string
-  onCommentMarkAsAnswer: (commentId: string) => void
+type Comment = {
+  _id: string;
+  content: string;
+  username: string;
+  creationDate: string;
+  isAnswer?: boolean;
+  replies?: CommentType[]
 }
 
-function Detailpage({
+type Thread = {
+  _id: string;
+  title: string;
+  description: string;
+  username: string;
+  creationDate: string;
+  category: string;
+  isLocked: boolean;
+  isCensored?: boolean;
+}
+
+type DetailpageProps = {
+  thread: Thread;
+  onThreadUpdate: (updatedThread: Thread) => void;
+  onCommentCreate: (newComment: CommentType) => void; // Change Comment to CommentType
+  userUsername?: string;
+  onCommentMarkAsAnswer: (commentId: string) => void;
+}
+
+const Detailpage: NextPage<DetailpageProps> = ({
   thread,
   onThreadUpdate,
   onCommentCreate,
   userUsername,
   onCommentMarkAsAnswer,
-}: DetailpageProps): JSX.Element {
+}) => {
   const { user } = useUser()
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
   const [censoredTitle, titleIsCensored] = checkInappropriateWords(thread.title)
   const [censoredDescription, descriptionIsCensored] = checkInappropriateWords(thread.description)
   thread.isCensored = titleIsCensored || descriptionIsCensored
@@ -30,18 +50,19 @@ function Detailpage({
   useEffect(() => {
     const fetchComments = async () => {
       const response = await fetch(`/api/threads/${thread._id}/comments`)
-      const fetchedComments: Comment[] = await response.json()
+      const fetchedComments: CommentType[] = await response.json()
       setComments(fetchedComments)
     }
-
     fetchComments()
   }, [thread._id])
 
-  const handleCommentCreated = (newComment: Comment) => {
+  
+
+  const handleCommentCreated = (newComment: CommentType) => {
     setComments((prevComments) => [...prevComments, newComment])
   }
 
-  const handleReplyCreated = (newReply: Comment, parentCommentId: string) => {
+  const handleReplyCreated = (newReply: CommentType, parentCommentId: string) => {
     setComments((prevComments) => {
       return prevComments.map((comment) => {
         if (comment._id === parentCommentId) {
@@ -57,7 +78,6 @@ function Detailpage({
 
   const handleCommentMarkAsAnswer = async (commentId: string, isAnswer: boolean) => {
     if (thread.category !== 'QNA') return
-
     try {
       const response = await fetch(`/api/threads/${thread._id}/comments/markAsAnswer`, {
         method: 'PUT',
@@ -66,13 +86,11 @@ function Detailpage({
         },
         body: JSON.stringify({ commentId, isAnswer }),
       })
-
       if (!response.ok) {
         throw new Error('Failed to mark comment as answer')
       }
-
       const updatedCommentsResponse = await fetch(`/api/threads/${thread._id}/comments`)
-      const updatedComments: Comment[] = await updatedCommentsResponse.json()
+      const updatedComments: CommentType[] = await updatedCommentsResponse.json()
       setComments(updatedComments)
     } catch (error) {
       console.error('Error marking comment as answer:', error)
@@ -85,26 +103,26 @@ function Detailpage({
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{censoredTitle}</h1>
-      <p>{censoredDescription}</p>
+      <h1 className="text-2xl font-bold mb-4">{String(censoredTitle)}</h1>
+      <p>{String(censoredDescription)}</p>
       <p className="text-sm text-gray-500 mt-2">{thread.username}</p>
       <p className="text-sm text-gray-500 mb-4">
         {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
       </p>
-      {(thread.username === userUsername || user?.publicMetadata?.isModerator) && (
-        <EditThread thread={thread} userUsername={userUsername} onUpdateThread={onThreadUpdate} />
-      )}
+
+      {(thread.username === userUsername || user?.publicMetadata?.isModerator) ? (
+  <EditThread thread={thread} userUsername={userUsername} onUpdateThread={onThreadUpdate} />
+) : null}
 
       <CommentList
         comments={comments}
         onMarkAsAnswer={handleCommentMarkAsAnswer}
-        isQna={thread.category === 'QNA'} 
+        isQna={thread.category === 'QNA'}
         threadId={thread._id}
         username={thread.username}
         isLocked={thread.isLocked}
         onReplyCreated={handleReplyCreated}
       />
-
       <CommentForm
         threadId={thread._id}
         username={user.username}
@@ -117,4 +135,3 @@ function Detailpage({
 }
 
 export default Detailpage;
-
