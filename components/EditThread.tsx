@@ -7,6 +7,17 @@ type EditThreadProps = {
   onUpdateThread: (updatedThread: Thread) => void
 }
 
+const isUser = (user: unknown): user is { publicMetadata?: { isModerator?: boolean }; username?: string } => {
+  return (
+    typeof user === 'object' &&
+    user !== null &&
+    'publicMetadata' in user &&
+    typeof (user as { publicMetadata?: { isModerator?: boolean } }).publicMetadata === 'object' &&
+    'username' in user
+  );
+};
+
+
 function EditThread({
   thread,
   userUsername,
@@ -17,7 +28,7 @@ function EditThread({
   const [title, setTitle] = useState(thread.title)
   const [description, setDescription] = useState(thread.description)
 
-  const canEdit = thread.username === userUsername || user?.publicMetadata?.isModerator
+  const canEdit = thread.username === userUsername || (isUser(user) && user.publicMetadata?.isModerator);
 
   if (!canEdit) {
     return <p>Du har inte rätt att redigera denna tråd.</p>
@@ -34,14 +45,14 @@ function EditThread({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update thread')
+        throw new Error('Failed to update thread');
       }
 
-      const updatedThreadFromServer = await response.json()
+      const updatedThreadFromServer = await response.json();
       onUpdateThread(updatedThreadFromServer);
-      setIsEditing(false)
+      setIsEditing(false);
     } catch (error) {
-      console.error('Error updating thread:', error)
+      console.error('Error updating thread:', error);
     }
   }
 
