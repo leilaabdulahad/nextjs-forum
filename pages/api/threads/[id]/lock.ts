@@ -3,6 +3,10 @@ import dbConnect from '@/lib/dbConnect'
 import Thread from '@/models/Thread'
 import User from '@/models/User'
 
+const isUser = (user: unknown): user is { isModerator: boolean } => {
+  return typeof user === 'object' && user !== null && 'isModerator' in user
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
 
@@ -13,8 +17,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
       const user = await User.findById(userId)
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' })
+
+      //using custom type guard
+      if (!isUser(user)) {
+        return res.status(404).json({ message: 'User not found or invalid structure' })
       }
 
       if (!user.isModerator) {
@@ -22,11 +28,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const thread = await Thread.findById(id)
+
       if (!thread) {
         return res.status(404).json({ message: 'Thread not found' })
       }
 
-      thread.isLocked = isLocked;
+      thread.isLocked = isLocked
       await thread.save()
 
       res.status(200).json({ message: isLocked ? 'Thread locked successfully' : 'Thread unlocked successfully' })
