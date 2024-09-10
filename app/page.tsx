@@ -18,7 +18,8 @@ const Home = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch threads')
         }
-        const data: Thread[] = await response.json()
+        let data: Thread[] = await response.json()
+        data = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setThreads(data);
       } catch (error) {
         console.error('Error fetching threads:', error)

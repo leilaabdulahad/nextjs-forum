@@ -2,6 +2,15 @@
 import { useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type CreateThreadPayload = Omit<Thread, '_id'> & { comments: [] }
 
@@ -86,17 +95,22 @@ const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <div className="mb-4">
-        <label className="mr-4">Kategori:</label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value as ThreadCategory)}
-          className="p-2 border rounded"
-        >
-          <option value="THREAD">Diskussionstråd</option>
-          <option value="QNA">Fråga och Svar</option>
-        </select>
-      </div>
+      
+      <Select onValueChange={(value) => setCategory(value as ThreadCategory)}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Välj kategori" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>Kategori</SelectLabel>
+            <SelectItem value="THREAD">Tråd</SelectItem>
+            <SelectItem value="QNA">QNA</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+
+
       <button
         onClick={handleClick}
         className="px-4 py-2 bg-black text-white rounded"
