@@ -2,14 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Document } from 'mongoose'
 import dbConnect from '@/lib/dbConnect'
 import Thread from '@/models/Thread'
-import Comment from '@/models/Comment';
-
-type IComment = Document & {
-  content: string
-  username: string
-  thread: string
-  isAnswer?: boolean
-}
+import Comment from '@/models/Comment'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
