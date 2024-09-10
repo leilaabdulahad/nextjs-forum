@@ -102,7 +102,6 @@ const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Kategori</SelectLabel>
             <SelectItem value="THREAD">Tråd</SelectItem>
             <SelectItem value="QNA">QNA</SelectItem>
           </SelectGroup>
