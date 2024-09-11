@@ -13,7 +13,7 @@ const CreatePage = () => {
     setThreads(updatedThreads)
     setConfirmation('Inlägget har skapats')
 
-    setTimeout(() => setConfirmation(null), 100000000)
+    setTimeout(() => setConfirmation(null), 5000)
   }
 
   return (
