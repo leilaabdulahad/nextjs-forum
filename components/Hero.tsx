@@ -1,14 +1,17 @@
-import React from 'react';
-import { Search, LogIn } from 'lucide-react';
-import { useAuth } from '@clerk/nextjs';
+import { LogIn } from 'lucide-react'
+import { useAuth } from '@clerk/nextjs'
 
 const Hero = () => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn } = useAuth()
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-16">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
+    // <div
+    //   className="relative bg-cover bg-center py-16"
+    //   style={{ backgroundImage: `url('/')` }} 
+    //   <div className="absolute inset-0 bg-black opacity-50"></div> 
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl mx-auto text-center text-white">
           <h1 className="text-5xl font-bold mb-4">Välkommen till Diskussionsforumet</h1>
           <p className="text-xl mb-8">Upptäck, diskutera och dela kunskap med vår växande gemenskap.</p>
           
@@ -26,8 +29,8 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    // </div>
+  )
+}
 
-export default Hero;
+export default Hero

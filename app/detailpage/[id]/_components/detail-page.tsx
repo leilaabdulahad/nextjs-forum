@@ -3,36 +3,16 @@ import { useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import EditThread from '@/components/EditThread'
 import CommentForm from '@/components/CommentForm'
-import CommentList from '@/components/commentList'
+import CommentList from '@/components/CommentList'
 import { checkInappropriateWords } from '@/utils/utils'
 
-type Comment = {
-  _id: string;
-  content: string;
-  username: string;
-  creationDate: string;
-  isAnswer?: boolean;
-  replies?: CommentType[]
-}
-
-type Thread = {
-  _id: string;
-  title: string;
-  description: string;
-  username: string;
-  creationDate: string;
-  category: string;
-  isLocked: boolean;
-  isCensored?: boolean;
-}
-
 type DetailpageProps = {
-  thread: Thread;
-  onThreadUpdate: (updatedThread: Thread) => void;
-  onCommentCreate: (newComment: CommentType) => void; // Change Comment to CommentType
-  userUsername?: string;
-  onCommentMarkAsAnswer: (commentId: string) => void;
-}
+  thread: Thread
+  onThreadUpdate: (updatedThread: Thread) => void
+  onCommentCreate: (newComment: CommentType) => void
+  userUsername?: string
+  onCommentMarkAsAnswer: (commentId: string) => void
+};
 
 const Detailpage: NextPage<DetailpageProps> = ({
   thread,
@@ -42,9 +22,14 @@ const Detailpage: NextPage<DetailpageProps> = ({
   onCommentMarkAsAnswer,
 }) => {
   const { user } = useUser()
-  const [comments, setComments] = useState<CommentType[]>([]);
-  const [censoredTitle, titleIsCensored] = checkInappropriateWords(thread.title)
-  const [censoredDescription, descriptionIsCensored] = checkInappropriateWords(thread.description)
+  const [comments, setComments] = useState<CommentType[]>([])
+
+  const censoredTitle = checkInappropriateWords(thread.title)
+  const censoredDescription = checkInappropriateWords(thread.description)
+
+  const titleIsCensored = censoredTitle !== thread.title;
+  const descriptionIsCensored = censoredDescription !== thread.description
+
   thread.isCensored = titleIsCensored || descriptionIsCensored
 
   useEffect(() => {
@@ -52,11 +37,9 @@ const Detailpage: NextPage<DetailpageProps> = ({
       const response = await fetch(`/api/threads/${thread._id}/comments`)
       const fetchedComments: CommentType[] = await response.json()
       setComments(fetchedComments)
-    }
+    };
     fetchComments()
   }, [thread._id])
-
-  
 
   const handleCommentCreated = (newComment: CommentType) => {
     setComments((prevComments) => [...prevComments, newComment])
@@ -69,7 +52,7 @@ const Detailpage: NextPage<DetailpageProps> = ({
           return {
             ...comment,
             replies: [...(comment.replies || []), newReply],
-          };
+          }
         }
         return comment;
       })
@@ -103,16 +86,16 @@ const Detailpage: NextPage<DetailpageProps> = ({
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{String(censoredTitle)}</h1>
-      <p>{String(censoredDescription)}</p>
+      <h1 className="text-2xl font-bold mb-4">{censoredTitle}</h1>
+      <p>{censoredDescription}</p>
       <p className="text-sm text-gray-500 mt-2">{thread.username}</p>
       <p className="text-sm text-gray-500 mb-4">
         {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
       </p>
 
       {(thread.username === userUsername || user?.publicMetadata?.isModerator) ? (
-  <EditThread thread={thread} userUsername={userUsername} onUpdateThread={onThreadUpdate} />
-) : null}
+        <EditThread thread={thread} userUsername={userUsername} onUpdateThread={onThreadUpdate} />
+      ) : null}
 
       <CommentList
         comments={comments}
@@ -134,4 +117,4 @@ const Detailpage: NextPage<DetailpageProps> = ({
   )
 }
 
-export default Detailpage;
+export default Detailpage

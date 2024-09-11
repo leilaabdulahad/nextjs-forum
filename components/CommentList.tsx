@@ -26,10 +26,9 @@ const CommentList = ({
   return (
     <ul className="space-y-4">
       {comments.map((comment: CommentType) => {
-        const censoredContent: string = checkInappropriateWords(comment.content as string)
+        const censoredContent: string = checkInappropriateWords(comment.content as string, comment)
 
-        const canMarkAsAnswer =
-          user?.username === username || user?.publicMetadata?.isModerator
+        const canMarkAsAnswer = user?.username === username || user?.publicMetadata?.isModerator
 
         return (
           <li key={comment._id} className={`p-4 border rounded-lg ${comment.isAnswer ? 'bg-green-200' : ''}`}>

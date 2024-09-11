@@ -2,14 +2,13 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Detailpage from './_components/detail-page'
-import { Thread, Comment } from '@/types'
 import { useUser } from '@clerk/nextjs'
 
 function DetailsPage(): JSX.Element {
   const params = useParams<{ id: string }>() || { id: '' }
   const id = params.id
   const [thread, setThread] = useState<Thread | null>(null)
-  const [comments, setComments] = useState<Comment[]>([])
+  const [comments, setComments] = useState<CommentType[]>([])
   const { user } = useUser()
 
   useEffect(() => {
@@ -18,7 +17,7 @@ function DetailsPage(): JSX.Element {
         try {
           const threadResponse = await fetch(`/api/threads/${id}`)
           if (!threadResponse.ok) {
-            throw new Error('Failed to fetch thread');
+            throw new Error('Failed to fetch thread')
           }
           const threadData: Thread = await threadResponse.json()
           setThread(threadData)
@@ -27,8 +26,12 @@ function DetailsPage(): JSX.Element {
           if (!commentsResponse.ok) {
             throw new Error('Failed to fetch comments')
           }
-          const commentsData: Comment[] = await commentsResponse.json()
-          setComments(commentsData);
+          const commentsData: CommentType[] = await commentsResponse.json()
+          if (Array.isArray(commentsData) && commentsData.length > 0) {
+            setComments(commentsData);
+          } else {
+            console.log('No comments found for this thread')
+          }
         } catch (error) {
           console.error('Error fetching thread or comments:', error)
         }
@@ -37,8 +40,8 @@ function DetailsPage(): JSX.Element {
     fetchThreadAndComments()
   }, [id])
 
-  const handleCommentCreate = async (newComment: Comment) => {
-    if (!thread) return;
+  const handleCommentCreate = async (newComment: CommentType) => {
+    if (!thread) return
     try {
       const response = await fetch(`/api/threads/${thread._id}/comments`, {
         method: 'POST',
@@ -52,18 +55,18 @@ function DetailsPage(): JSX.Element {
         throw new Error('Failed to create comment')
       }
 
-      const createdComment: Comment = await response.json()
+      const createdComment: CommentType = await response.json()
 
-      setComments(prevComments => [...prevComments, createdComment])
-      setThread(prevThread => {
+      setComments((prevComments) => [...prevComments, createdComment])
+      setThread((prevThread) => {
         if (!prevThread) return null
         return {
           ...prevThread,
-          comments: [...prevThread.comments, createdComment],
+          comments: [...(prevThread.comments || []), createdComment],
         }
       })
     } catch (error) {
-      console.error('Error creating comment:', error)
+      console.error('Error creating comment:', error);
     }
   }
 
@@ -72,10 +75,10 @@ function DetailsPage(): JSX.Element {
   }
 
   const handleCommentMarkAsAnswer = async (commentId: string) => {
-    if (!thread || thread.category !== 'QNA') return
+    if (!thread || thread.category !== 'QNA' || !thread.comments) return
 
     try {
-      const commentToMark = thread.comments.find(comment => comment._id === commentId);
+      const commentToMark = thread.comments.find((comment) => comment._id === commentId)
       if (!commentToMark) return
 
       const newIsAnswerStatus = !commentToMark.isAnswer
@@ -92,15 +95,15 @@ function DetailsPage(): JSX.Element {
         throw new Error('Failed to mark comment as answer')
       }
 
-      setThread(prevThread => {
-        if (!prevThread) return null;
+      setThread((prevThread) => {
+        if (!prevThread || !prevThread.comments) return null
 
-        const updatedComments = prevThread.comments.map(comment =>
+        const updatedComments = prevThread.comments.map((comment) =>
           comment._id === commentId ? { ...comment, isAnswer: newIsAnswerStatus } : comment
-        );
+        )
 
         return { ...prevThread, comments: updatedComments }
-      });
+      })
     } catch (error) {
       console.error('Error marking comment as answer:', error)
     }

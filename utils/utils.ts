@@ -1,34 +1,26 @@
-import { CommentType } from '@/components/commentList'
 import { censoredWords } from './censoredWords'
 
-export function checkInappropriateWords(input: string | CommentType): [string, boolean] | CommentType {
+export function checkInappropriateWords(input: string | CommentType, comment?: CommentType): string {
+    let words: string[];
     if (typeof input === 'string') {
-        const words = input.split(' ')
-        let isCensored = false;
-        const newWords = words.map(word => {
-            if (censoredWords.includes(word)) {
-                isCensored = true;
-                return '*'.repeat(word.length);
-            }
-            return word;
-        })
-
-        return [newWords.join(' '), isCensored]
+        words = input.split(' ')
     } else {
-        const comment = input
-        const words = comment.content.split(' ')
-        let isCensored = false
-
-        const newWords = words.map(word => {
-            if (censoredWords.includes(word)) {
-                isCensored = true;
-                return '*'.repeat(word.length);
-            }
-            return word;
-        })
-
-        comment.content = newWords.join(' ')
-        comment.isCensored = isCensored
-        return comment
+        comment = input
+        words = comment.content.split(' ')
     }
+
+    let isCensored = false;
+    const newWords = words.map(word => {
+        if (censoredWords.includes(word)) {
+            isCensored = true
+            return '*'.repeat(word.length)
+        }
+        return word;
+    })
+
+    if (comment) {
+        comment.isCensored = isCensored
+    }
+
+    return newWords.join(' ')
 }
