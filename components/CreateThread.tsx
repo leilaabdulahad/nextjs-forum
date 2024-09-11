@@ -1,4 +1,3 @@
-'use client'
 import { useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
@@ -16,9 +15,10 @@ type CreateThreadPayload = Omit<Thread, '_id'> & { comments: [] }
 
 type CreateThreadProps = {
   onCreate: (thread: Thread) => void
+  clearConfirmation: () => void
 }
 
-const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
+const CreateThread = ({ onCreate, clearConfirmation }: CreateThreadProps): JSX.Element => {
   const { user } = useUser()
   const router = useRouter()
   const [title, setTitle] = useState('')
@@ -66,6 +66,11 @@ const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
     }
   }
 
+  const handleInputChange = (setter: (value: string) => void) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setter(e.target.value)
+    clearConfirmation()
+  }
+
   if (!user) {
     return (
       <div className="border p-4 rounded shadow-sm">
@@ -87,13 +92,13 @@ const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
         placeholder="Titel"
         className="w-full p-2 border rounded"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={handleInputChange(setTitle)}
       />
       <textarea
         placeholder="Beskrivning"
         className="w-full p-2 border rounded"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={handleInputChange(setDescription)}
       />
       
       <Select onValueChange={(value) => setCategory(value as ThreadCategory)}>
@@ -107,8 +112,6 @@ const CreateThread = ({ onCreate }: CreateThreadProps): JSX.Element => {
           </SelectGroup>
         </SelectContent>
       </Select>
-
-
 
       <button
         onClick={handleClick}

@@ -47,10 +47,7 @@ const Home = () => {
     }
   }, [isSignedIn, user])
 
-  const handleCreateThread = (newThread: Thread) => {
-    const updatedThreads = [newThread, ...threads]
-    setThreads(updatedThreads);
-  }
+
 
   const toggleThreadLock = async (threadId: string) => {
     const thread = threads.find((thread) => thread._id === threadId)
@@ -86,12 +83,6 @@ const Home = () => {
           onToggleLock={toggleThreadLock}
         />
       </div>
-      {isSignedIn && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">Skapa ny tråd</h2>
-          <CreateThread onCreate={handleCreateThread} />
-        </div>
-      )}
     </div>
   )
 }
