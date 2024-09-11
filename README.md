@@ -11,9 +11,10 @@ Certain users are designated as moderators and have full access to manage all th
 The project is still under development, with upcoming features such as thread deletion and searchable tags for filtering threads by specific tags. Additionally, enhancement of the exciting code will of course be in focus to further improve error handling, optimizing performance and refining the design.
 
 ## Built with
-Next.js
-TypeScript
-MongoDB
-Tailwind CSS
-Clerk
+- Next.js
+- TypeScript
+- MongoDB
+- Tailwind CSS
+- Clerk
+
 [![My Skills](https://skillicons.dev/icons?i=nextjs,ts,tailwind)](https://skillicons.dev)
