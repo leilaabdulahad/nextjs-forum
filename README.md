@@ -17,4 +17,4 @@ The project is still under development, with upcoming features such as thread de
 - Tailwind CSS
 - Clerk
 
-[![My Skills](https://skillicons.dev/icons?i=nextjs,ts,tailwind)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=nextjs,ts,mongodb,tailwind)](https://skillicons.dev)
