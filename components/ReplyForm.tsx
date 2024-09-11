@@ -12,10 +12,10 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
   const [content, setContent] = useState('')
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
     const newReply: CommentType = {
-      _id: Math.random().toString(36).substring(7), // Generate random ID for demo purposes
+      _id: Math.random().toString(36).substring(7), 
       threadId,
       parentCommentId,
       content,
@@ -36,14 +36,14 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
       });
 
       if (response.ok) {
-        onReplyCreated(newReply, parentCommentId);
-        setContent('');
+        onReplyCreated(newReply, parentCommentId)
+        setContent('')
       } else {
-        const errorResponse = await response.json();
-        console.error('Failed to post reply:', errorResponse);
+        const errorResponse = await response.json()
+        console.error('Failed to post reply:', errorResponse)
       }
     } catch (error) {
-      console.error('Failed to post reply:', error);
+      console.error('Failed to post reply:', error)
     }
   };
 
@@ -61,7 +61,7 @@ const ReplyForm = ({ threadId, username, parentCommentId, onReplyCreated, isLock
         className="w-full mt-6 p-2 border border-gray-300 rounded-md"
 
       />
-      <button type="submit" className="mt-2 px-4 py-2 bg-black text-white rounded-md">Reply</button>
+      <button type="submit" className="mt-2 px-4 py-2 bg-black text-white rounded-md">Svara</button>
     </form>
   )
 }

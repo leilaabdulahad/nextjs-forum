@@ -120,7 +120,11 @@ function DetailsPage(): JSX.Element {
       onCommentMarkAsAnswer={handleCommentMarkAsAnswer}
     />
   ) : (
-    <p>Loading...</p>
+    <div className="flex flex-row gap-2 justify-center items-center h-screen">
+      <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
+      <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.3s'}}></div>
+      <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
+    </div>
   )
 }
 

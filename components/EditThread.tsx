@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { useUser } from '@clerk/nextjs'
+import { Save, X } from 'lucide-react'
 
 type EditThreadProps = {
   thread: Thread
-  userUsername: string | undefined;
+  userUsername: string | undefined
   onUpdateThread: (updatedThread: Thread) => void
+  isEditing: boolean
+  setIsEditing: (isEditing: boolean) => void
 }
 
 const isUser = (user: unknown): user is { publicMetadata?: { isModerator?: boolean }; username?: string } => {
@@ -17,37 +20,30 @@ const isUser = (user: unknown): user is { publicMetadata?: { isModerator?: boole
   )
 }
 
-
 function EditThread({
   thread,
   userUsername,
   onUpdateThread,
+  isEditing,
+  setIsEditing,
 }: EditThreadProps): JSX.Element {
   const { user } = useUser()
-  const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(thread.title)
   const [description, setDescription] = useState(thread.description)
 
   const canEdit = thread.username === userUsername || (isUser(user) && user.publicMetadata?.isModerator)
 
-  if (!canEdit) {
-    return <p>Du har inte rätt att redigera denna tråd.</p>
-  }
-
   const handleSave = async () => {
     const updatedThread = { ...thread, title, description }
-
     try {
       const response = await fetch(`/api/threads/${thread._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description }),
       });
-
       if (!response.ok) {
         throw new Error('Failed to update thread');
       }
-
       const updatedThreadFromServer = await response.json();
       onUpdateThread(updatedThreadFromServer);
       setIsEditing(false);
@@ -56,39 +52,43 @@ function EditThread({
     }
   }
 
+  if (!canEdit || !isEditing) {
+    return <></>; // Return an empty fragment instead of null
+  }
+
   return (
-    <div>
-      {isEditing ? (
-        <div>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Titel"
-            className="border rounded p-2 mb-2 w-full"
-          />
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Beskrivning"
-            className="border rounded p-2 mb-2 w-full"
-          />
-          <button onClick={handleSave} className="bg-green-500 text-white rounded p-2">
+    <div className="bg-white rounded-lg shadow-md p-6 mt-4">
+      <div className="space-y-4">
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Titel"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Beskrivning"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-32"
+        />
+        <div className="flex space-x-2">
+          <button
+            onClick={handleSave}
+            className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+          >
+            <Save className="w-4 h-4 mr-2" />
             Spara
           </button>
-          <button onClick={() => setIsEditing(false)} className="bg-red-500 text-white rounded p-2 ml-2">
+          <button
+            onClick={() => setIsEditing(false)}
+            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+          >
+            <X className="w-4 h-4 mr-2" />
             Avbryt
           </button>
         </div>
-      ) : (
-        <div>
-          <h2>{thread.title}</h2>
-          <p>{thread.description}</p>
-          <button onClick={() => setIsEditing(true)} className="text-blue-500">
-            Redigera tråd
-          </button>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

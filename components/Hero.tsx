@@ -6,8 +6,7 @@ const Hero = () => {
   const { isSignedIn } = useAuth()
 
   return (
-     <div className="relative bg-blue-500 py-16">
-       <div className="absolute inset-0 bg-black opacity-50"></div> 
+    <div className="bg-black text-gray-900 py-16">
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center text-white">
@@ -18,12 +17,12 @@ const Hero = () => {
             {isSignedIn ? (
               <Link href='/create'>
 
-              <button className="flex items-center bg-black text-white font-semibold py-2 px-4 rounded-lg  transition duration-300">
+              <button className="flex items-center bg-white text-black font-semibold py-2 px-4 rounded-lg  transition duration-300">
                 Skapa ny tråd
               </button>
               </Link>
             ) : (
-              <button className="flex items-center bg-white text-blue-600 font-semibold py-2 px-4 rounded-full hover:bg-blue-100 transition duration-300">
+              <button className="flex items-center bg-white text-black font-semibold py-2 px-4 rounded-full hover:bg-gray-200 transition duration-300">
                 <LogIn className="mr-2" size={20} />
                 Logga in för att skapa tråd
               </button>
