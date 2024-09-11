@@ -37,7 +37,7 @@ const Navbar = (): JSX.Element => {
             ))}
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="bg-gray-800 text-white px-4 py-2 rounded-full font-medium hover:bg-gray-700 transition duration-300">
+              <button className="text-gray-600 hover:text-gray-800 transition duration-300">
                   Logga in
                 </button>
               </SignInButton>
@@ -46,7 +46,7 @@ const Navbar = (): JSX.Element => {
               <UserButton 
                 appearance={{
                   elements: {
-                    avatarBox: "w-10 h-10"
+                    avatarBox: "w-7 h-7"
                   }
                 }}
               />
@@ -68,7 +68,7 @@ const Navbar = (): JSX.Element => {
               <Link 
                 href={link.path} 
                 key={link.name} 
-                className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded transition duration-300"
+                className="block py-2 px-4 text-gray-600 hover:bg-gray-200 rounded transition duration-300"
                 onClick={toggleMobileMenu}
               >
                 {link.name}
@@ -77,7 +77,7 @@ const Navbar = (): JSX.Element => {
             <div className="">
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className="w-full bg-gray-800 text-white px-4 py-2 rounded-full font-medium hover:bg-gray-700 transition duration-300">
+                  <button className="block w-full py-2 px-4 text-gray-600 hover:bg-gray-200 text-left rounded transition duration-300">
                     Logga in
                   </button>
                 </SignInButton>
