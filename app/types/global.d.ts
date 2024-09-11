@@ -2,7 +2,7 @@ declare namespace NodeJS {
     interface Global {
       mongo: {
         conn: any;
-        promise: Promise<any> | null;
+        promise: Promise<any> | null
       };
     }
   }

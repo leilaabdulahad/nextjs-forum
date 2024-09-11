@@ -6,17 +6,17 @@ type CommentType = {
   username: string
   creationDate: string
   isAnswer: boolean
-  replies: Reply[] // Use the Reply type here
+  replies: Reply[] 
   isCensored: boolean
 }
 
 type Reply = {
-  _id: string // Add this line
-  threadId: string // Add this line
+  _id: string
+  threadId: string 
   parentCommentId: string
   content: string
   username: string
-  creationDate: string // Add this line
+  creationDate: string 
   isAnswer?: boolean
-  isCensored: boolean // Add this line
+  isCensored: boolean 
 }
