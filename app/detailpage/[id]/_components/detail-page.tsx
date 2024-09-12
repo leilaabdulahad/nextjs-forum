@@ -14,6 +14,7 @@ type DetailpageProps = {
   onCommentCreate: (newComment: CommentType) => void
   userUsername?: string
   onCommentMarkAsAnswer: (commentId: string) => void
+  comments: CommentType[] // Add this line
 }
 
 const Detailpage: NextPage<DetailpageProps> = ({
@@ -149,24 +150,9 @@ const Detailpage: NextPage<DetailpageProps> = ({
           isEditing={isEditing}
           setIsEditing={setIsEditing}
         />
-
-            {!thread.isLocked && (
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="p-6">
-                  <h2 className="text-2xl font-semibold mb-4">Add a Comment</h2>
-                  <CommentForm
-                    threadId={thread._id}
-                    username={user.username}
-                    onCommentCreated={handleCommentCreated}
-                    isLocked={thread.isLocked}
-                    hasAnswer={comments.some((comment) => comment.isAnswer)}
-                  />
-                </div>
-              </div>
-            )}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+            <h2 className="text-2xl font-semibold mb-4">Kommentarer</h2>
             <CommentList
               comments={comments}
               onMarkAsAnswer={handleCommentMarkAsAnswer}
@@ -178,6 +164,21 @@ const Detailpage: NextPage<DetailpageProps> = ({
             />
           </div>
         </div>
+
+            {!thread.isLocked && (
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="p-6">
+                  <CommentForm
+                    threadId={thread._id}
+                    username={user.username}
+                    onCommentCreated={handleCommentCreated}
+                    isLocked={thread.isLocked}
+                    hasAnswer={comments.some((comment) => comment.isAnswer)}
+                  />
+                </div>
+              </div>
+            )}
+        
 
       </div>
     </div>
