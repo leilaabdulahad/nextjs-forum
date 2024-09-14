@@ -84,12 +84,12 @@ const CommentItem = ({
           {comment.isAnswer && (
             <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full flex items-center">
               <Award className="w-4 h-4 mr-1" />
-              Answer
+              Svar
             </div>
           )}
         </div>
         <p className="mt-3 text-gray-700">
-          {comment.isCensored ? 'This comment has been censored.' : censoredContent}
+          {comment.isCensored ? 'Den här kommentaren är censorerad' : censoredContent}
         </p>
         <div className="mt-4 flex items-center space-x-4">
           <button 
@@ -107,7 +107,7 @@ const CommentItem = ({
                   : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
               }`}>
               <Award className="w-4 h-4 mr-1" />
-              {comment.isAnswer ? 'Unmark Answer' : 'Mark as Answer'}
+              {comment.isAnswer ? 'Avmarkera' : 'Markera som svar'}
             </button>
           )}
         </div>

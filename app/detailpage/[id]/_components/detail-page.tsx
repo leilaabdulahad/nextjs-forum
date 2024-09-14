@@ -1,5 +1,5 @@
 import { useUser } from '@clerk/nextjs'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { NextPage } from 'next'
 import EditThread from '@/components/EditThread'
 import CommentForm from '@/components/CommentForm'
@@ -14,7 +14,7 @@ type DetailpageProps = {
   onCommentCreate: (newComment: CommentType) => void
   userUsername?: string
   onCommentMarkAsAnswer: (commentId: string) => void
-  comments: CommentType[] // Add this line
+  comments: CommentType[]
 }
 
 const Detailpage: NextPage<DetailpageProps> = ({
@@ -27,11 +27,12 @@ const Detailpage: NextPage<DetailpageProps> = ({
   const { user } = useUser()
   const [comments, setComments] = useState<CommentType[]>([])
   const [isEditing, setIsEditing] = useState(false)
+  const commentsRef = useRef<HTMLDivElement>(null)
 
   const censoredTitle = checkInappropriateWords(thread.title)
   const censoredDescription = checkInappropriateWords(thread.description)
 
-  const titleIsCensored = censoredTitle !== thread.title;
+  const titleIsCensored = censoredTitle !== thread.title
   const descriptionIsCensored = censoredDescription !== thread.description
 
   thread.isCensored = titleIsCensored || descriptionIsCensored
@@ -58,18 +59,18 @@ const Detailpage: NextPage<DetailpageProps> = ({
             replies: [...(comment.replies || []), newReply],
           }
         }
-        return comment;
+        return comment
       })
     })
   }
+
   const countTotalComments = (comments: CommentType[]): number => {
     return comments.reduce((total, comment) => {
-      return total + 1 + (comment.replies ? comment.replies.length : 0);
-    }, 0);
-  };
-  
-  const totalComments = countTotalComments(comments);
-  
+      return total + 1 + (comment.replies ? comment.replies.length : 0)
+    }, 0)
+  }
+
+  const totalComments = countTotalComments(comments)
 
   const handleCommentMarkAsAnswer = async (commentId: string, isAnswer: boolean) => {
     if (thread.category !== 'QNA') return
@@ -94,13 +95,17 @@ const Detailpage: NextPage<DetailpageProps> = ({
 
   const canEdit = thread.username === userUsername || (user?.publicMetadata?.isModerator === true)
 
+  const scrollToComments = () => {
+    commentsRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   if (!user || !user.username) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-blue-700">
-        <Link href='/sign-in' className="text-3xl font-semibold mb-2 hover:underline transition duration-300">
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+        <Link href='/sign-in' className="text-3xl font-semibold mb-2 text-blue-600 hover:text-blue-800 transition duration-300">
           Logga in
         </Link>
-        <p className="text-lg">
+        <p className="text-lg text-gray-700">
           för att se sidan
         </p>
       </div>
@@ -108,14 +113,14 @@ const Detailpage: NextPage<DetailpageProps> = ({
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10">
-      <div className="container mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-          <div className="p-6">
+    <div className="bg-gray-100 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8 transition duration-300 hover:shadow-lg">
+          <div className="p-6 sm:p-8">
             <h1 className="text-3xl font-bold mb-4 text-gray-800">{censoredTitle}</h1>
             <p className="text-lg text-gray-600 mb-6">{censoredDescription}</p>
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center justify-between text-sm text-gray-500">
+              <div className="flex flex-wrap items-center space-x-4 mb-2 sm:mb-0">
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-1" />
                   <span>{thread.username}</span>
@@ -124,16 +129,18 @@ const Detailpage: NextPage<DetailpageProps> = ({
                   <Calendar className="w-4 h-4 mr-1" />
                   <span>{new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}</span>
                 </div>
-                <div className="flex items-center">
+                <button 
+                  onClick={scrollToComments}
+                  className="flex items-center text-blue-500 hover:text-blue-600 transition duration-300"
+                >
                   <MessageCircle className="w-4 h-4 mr-1" />
                   <span>{totalComments} comments</span>
-                </div>
-
+                </button>
               </div>
               {canEdit && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center text-blue-500 hover:text-blue-600 transition duration-300"
+                  className="flex items-center text-blue-500 hover:text-blue-600 transition duration-300 mt-2 sm:mt-0"
                 >
                   <Pencil className="w-4 h-4 mr-2" />
                   Redigera tråd
@@ -150,9 +157,10 @@ const Detailpage: NextPage<DetailpageProps> = ({
           isEditing={isEditing}
           setIsEditing={setIsEditing}
         />
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-          <div className="p-6">
-            <h2 className="text-2xl font-semibold mb-4">Kommentarer</h2>
+
+        <div ref={commentsRef} className="bg-white rounded-xl shadow-md overflow-hidden mb-8 transition duration-300 hover:shadow-lg">
+          <div className="p-6 sm:p-8">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-800">Kommentarer</h2>
             <CommentList
               comments={comments}
               onMarkAsAnswer={handleCommentMarkAsAnswer}
@@ -165,21 +173,19 @@ const Detailpage: NextPage<DetailpageProps> = ({
           </div>
         </div>
 
-            {!thread.isLocked && (
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="p-6">
-                  <CommentForm
-                    threadId={thread._id}
-                    username={user.username}
-                    onCommentCreated={handleCommentCreated}
-                    isLocked={thread.isLocked}
-                    hasAnswer={comments.some((comment) => comment.isAnswer)}
-                  />
-                </div>
-              </div>
-            )}
-        
-
+        {!thread.isLocked && (
+          <div className="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
+            <div className="p-6 sm:p-8">
+              <CommentForm
+                threadId={thread._id}
+                username={user.username}
+                onCommentCreated={handleCommentCreated}
+                isLocked={thread.isLocked}
+                hasAnswer={comments.some((comment) => comment.isAnswer)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
