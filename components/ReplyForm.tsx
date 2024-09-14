@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Send } from 'lucide-react'
 
 type ReplyFormProps = {
@@ -9,12 +9,12 @@ type ReplyFormProps = {
   isLocked: boolean
 }
 
-const ReplyForm = ({ 
-  threadId, 
-  username, 
-  parentCommentId, 
-  onReplyCreated, 
-  isLocked 
+const ReplyForm = ({
+  threadId,
+  username,
+  parentCommentId,
+  onReplyCreated,
+  isLocked,
 }: ReplyFormProps): JSX.Element => {
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -36,6 +36,7 @@ const ReplyForm = ({
       replies: [],
       isCensored: false,
     }
+
     try {
       const response = await fetch(`/api/threads/${threadId}/comments/${parentCommentId}/replies`, {
         method: 'POST',
@@ -43,13 +44,13 @@ const ReplyForm = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ content, username, parentCommentId }),
-      });
+      })
       if (response.ok) {
         onReplyCreated(newReply, parentCommentId)
         setContent('')
       } else {
         const errorResponse = await response.json()
-        setError(errorResponse.message || 'Falied to post reply')
+        setError(errorResponse.message || 'Failed to post reply')
       }
     } catch (error) {
       setError('An error occurred while posting the reply. Try again')
@@ -61,7 +62,7 @@ const ReplyForm = ({
   if (isLocked) {
     return (
       <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-600 text-sm font-medium">Tråden är låst. Nya svar kan inte läggas till.</p>
+        <p className="text-red-600 text-sm font-medium">Inlägget är låst. Nya svar kan inte läggas till.</p>
       </div>
     )
   }
@@ -84,7 +85,7 @@ const ReplyForm = ({
       </div>
 
       {error && (
-        <div className='mt-2 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg'>
+        <div className="mt-2 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
           {error}
         </div>
       )}
@@ -93,7 +94,8 @@ const ReplyForm = ({
         <button
           type="submit"
           disabled={isSubmitting || content.trim() === ''}
-          className="inline-flex items-center px-3 py-2 bg-black text-white text-sm font-medium rounded-lg  focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out">
+          className="inline-flex items-center px-3 py-2 bg-black text-white text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out"
+        >
           {isSubmitting ? (
             <>
               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

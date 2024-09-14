@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Send } from 'lucide-react'
 
 type CommentFormProps = {
@@ -13,7 +13,7 @@ const CommentForm = ({
   threadId,
   username,
   onCommentCreated,
-  isLocked
+  isLocked,
 }: CommentFormProps): JSX.Element => {
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -35,7 +35,7 @@ const CommentForm = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newComment),
-      })
+      });
 
       if (response.ok) {
         const createdComment = await response.json()
@@ -54,13 +54,7 @@ const CommentForm = ({
     }
   }
 
-  if (isLocked) {
-    return (
-      <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-600 font-medium">Tråden är låst. Nya kommentarer kan inte läggas till.</p>
-      </div>
-    )
-  }
+
 
   return (
     <form onSubmit={handleSubmit} className="mt-6">
@@ -81,8 +75,7 @@ const CommentForm = ({
         <button
           type="submit"
           disabled={isSubmitting || content.trim() === ''}
-          className="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out">
-
+          className="inline-flex items-center px-4 py-2 bg-black text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out">
           {isSubmitting ? (
             <>
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

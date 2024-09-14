@@ -21,43 +21,51 @@ const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => 
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center mt-20">
-        <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
-        <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.3s'}}></div>
-        <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
-      </div>
+      <div className="flex flex-row gap-2 justify-center items-center mt-20">
+      <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
+      <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.3s'}}></div>
+      <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
+    </div>
     )
   }
 
   if (threads.length === 0) {
-    return <p>No threads available.</p>
+    return <p className="text-center text-gray-500 mt-8">No threads available.</p>
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {threads.map((thread) => {
         const censoredDescription: string = checkInappropriateWords(thread.description as string)
         const censoredTitle: string = checkInappropriateWords(thread.title as string)
-
         return (
-          <div key={thread._id} className="border p-4 rounded shadow-sm">
-            <Link href={`/detailpage/${thread._id}`}>
-              <h2 className="text-xl font-bold cursor-pointer">{censoredTitle}</h2>
-            </Link>
-            <p>{censoredDescription}</p>
-            <p className="text-sm text-gray-500 mt-2">{thread.username}</p>
-            <p className="text-sm text-gray-500 mb-4">
-              {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
-            </p>
-
-            {(user?.username === thread.username || user?.publicMetadata?.isModerator === 'true') && (
-              <button
-                onClick={() => onToggleLock(thread._id)}
-                className={`mt-2 px-4 py-2 rounded ${thread.isLocked ? 'bg-red-600' : 'bg-green-600'} text-white`}
-              >
-                {thread.isLocked ? 'Lås upp' : 'Lås inlägget'}
-              </button>
-            )}
+          <div key={thread._id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div className="p-6">
+              <Link href={`/detailpage/${thread._id}`}>
+                <h2 className="text-2xl font-semibold text-gray-800 hover:text-blue-600 transition-colors duration-300 cursor-pointer">{censoredTitle}</h2>
+              </Link>
+              <p className="mt-2 text-gray-600">{censoredDescription}</p>
+              <div className="mt-4 flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-gray-500">{thread.username}</p>
+                  <p className="text-xs text-gray-400">
+                    {new Date(thread.creationDate).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                  </p>
+                </div>
+                {(user?.username === thread.username || user?.publicMetadata?.isModerator === 'true') && (
+                  <button
+                    onClick={() => onToggleLock(thread._id)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 ${
+                      thread.isLocked 
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                    }`}
+                  >
+                    {thread.isLocked ? 'Lås upp' : 'Lås tråden'}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         )
       })}

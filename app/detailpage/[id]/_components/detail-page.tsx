@@ -92,6 +92,7 @@ const Detailpage: NextPage<DetailpageProps> = ({
       console.error('Error marking comment as answer:', error)
     }
   }
+  const isThreadLocked = thread.isLocked;
 
   const canEdit = thread.username === userUsername || (user?.publicMetadata?.isModerator === true)
 
@@ -173,7 +174,11 @@ const Detailpage: NextPage<DetailpageProps> = ({
           </div>
         </div>
 
-        {!thread.isLocked && (
+        {isThreadLocked ? (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-sm font-medium">Inlägget är låst. Nya Kommentarer kan inte läggas till.</p>
+        </div>
+        ) : (
           <div className="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
             <div className="p-6 sm:p-8">
               <CommentForm

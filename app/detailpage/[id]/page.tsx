@@ -28,7 +28,7 @@ function DetailsPage(): JSX.Element {
           }
           const commentsData: CommentType[] = await commentsResponse.json()
           if (Array.isArray(commentsData) && commentsData.length > 0) {
-            setComments(commentsData);
+            setComments(commentsData)
           } else {
             console.log('No comments found for this thread')
           }
@@ -118,6 +118,7 @@ function DetailsPage(): JSX.Element {
       onCommentCreate={handleCommentCreate}
       userUsername={userUsername}
       onCommentMarkAsAnswer={handleCommentMarkAsAnswer}
+      comments={comments} // Pass comments prop here
     />
   ) : (
     <div className="flex flex-row gap-2 justify-center items-center h-screen">
