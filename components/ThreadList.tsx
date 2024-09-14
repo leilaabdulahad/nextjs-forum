@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { useUser } from '@clerk/nextjs'
 import { checkInappropriateWords } from '@/utils/utils'
+import { useState, useEffect } from 'react'
 
 type ThreadListProps = {
   threads: Thread[]
@@ -10,8 +11,23 @@ type ThreadListProps = {
 
 const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => {
   const { user } = useUser()
+  const [isLoading, setIsLoading] = useState(true)
 
-  console.log('User:', user)
+  useEffect(() => {
+    if (threads.length > 0) {
+      setIsLoading(false);
+    }
+  }, [threads])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center mt-20">
+        <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
+        <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.3s'}}></div>
+        <div className="w-4 h-4 rounded-full bg-black animate-bounce" style={{animationDelay: '.7s'}}></div>
+      </div>
+    )
+  }
 
   if (threads.length === 0) {
     return <p>No threads available.</p>
