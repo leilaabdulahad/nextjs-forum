@@ -42,7 +42,7 @@ const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => 
           <div key={thread._id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
             <div className="p-6">
               <Link href={`/detailpage/${thread._id}`}>
-                <h2 className="text-2xl font-semibold text-gray-800 hover:text-blue-600 transition-colors duration-300 cursor-pointer">{censoredTitle}</h2>
+                <h2 className="text-2xl font-semibold text-gray-800 transition-colors duration-300 cursor-pointer">{censoredTitle}</h2>
               </Link>
               <p className="mt-2 text-gray-600">{censoredDescription}</p>
               <div className="mt-4 flex justify-between items-center">

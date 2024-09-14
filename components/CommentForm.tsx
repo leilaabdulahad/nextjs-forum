@@ -57,9 +57,9 @@ const CommentForm = ({
 
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6">
+    <form onSubmit={handleSubmit}>
       <div className="flex flex-col space-y-2">
-        <label htmlFor="comment" className="text-sm font-medium text-gray-700">
+        <label htmlFor="comment" className="text-lg font-medium text-gray-700">
           Lägg till en kommentar
         </label>
         <textarea

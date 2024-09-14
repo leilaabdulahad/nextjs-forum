@@ -77,8 +77,11 @@ const CommentItem = ({
               <span className="text-xl font-semibold">{comment.username[0].toUpperCase()}</span>
             </div>
             <div>
-              <p className="font-semibold">{comment.username}</p>
-              <p className="text-sm text-gray-500">{new Date(comment.creationDate).toLocaleString()}</p>
+              <p className="font-semibold text-gray-800">{comment.username}</p>
+              <p className="text-sm text-gray-500">
+                {new Date(comment.creationDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })},
+                {new Date(comment.creationDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+              </p>
             </div>
           </div>
           {comment.isAnswer && (
@@ -147,7 +150,7 @@ const CommentItem = ({
                     </div>
                   </div>
                   <p className="mt-2 text-sm text-gray-700">
-                    {reply.isCensored ? 'This reply has been censored.' : (reply.content)}
+                    {reply.isCensored ? 'Den här kommentaren är censorerad.' : reply.content}
                   </p>
                 </li>
               ))}
