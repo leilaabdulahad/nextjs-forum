@@ -94,7 +94,16 @@ const Detailpage: NextPage<DetailpageProps> = ({
   }
   const isThreadLocked = thread.isLocked;
 
-  const canEdit = thread.username === userUsername || (user?.publicMetadata?.isModerator === true)
+  // Add this line to define isModerator
+  const isModerator = user?.publicMetadata?.isModerator || false;
+
+  // Check if the current user can edit the thread
+  const canEdit = user?.username && thread.username && 
+                  (user.username.toLowerCase() === thread.username.toLowerCase() || isModerator);
+
+  console.log('Current user:', user);
+  console.log('Thread creator username:', thread.username);
+  console.log('Is moderator:', isModerator);
 
   const scrollToComments = () => {
     commentsRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -176,8 +185,8 @@ const Detailpage: NextPage<DetailpageProps> = ({
 
         {isThreadLocked ? (
           <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600 text-sm font-medium">Inlägget är låst. Nya Kommentarer kan inte läggas till.</p>
-        </div>
+            <p className="text-red-600 text-sm font-medium">Inlägget är låst. Nya Kommentarer kan inte läggas till.</p>
+          </div>
         ) : (
           <div className="bg-white rounded-xl shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
             <div className="p-6 sm:p-8">

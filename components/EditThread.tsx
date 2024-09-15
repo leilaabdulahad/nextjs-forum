@@ -34,16 +34,28 @@ function EditThread({
   const canEdit = thread.username === userUsername || (isUser(user) && user.publicMetadata?.isModerator)
 
   const handleSave = async () => {
-    const updatedThread = { ...thread, title, description }
+    if (!user) {
+      console.error('User is not authenticated');
+      return;
+    }
+
+    const updatedData = { userId: user.id, updates: { title, description } };
+    console.log('Updating thread with ID:', thread._id);
+    console.log('Updated data:', updatedData);
+
+
+
     try {
       const response = await fetch(`/api/threads/${thread._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ userId: user.id, updates: { title, description } }), // Use user.id safely
       });
+      
       if (!response.ok) {
         throw new Error('Failed to update thread');
       }
+      
       const updatedThreadFromServer = await response.json();
       onUpdateThread(updatedThreadFromServer);
       setIsEditing(false);
@@ -51,6 +63,8 @@ function EditThread({
       console.error('Error updating thread:', error);
     }
   }
+
+  
 
   if (!canEdit || !isEditing) {
     return <></>; // Return an empty fragment instead of null
