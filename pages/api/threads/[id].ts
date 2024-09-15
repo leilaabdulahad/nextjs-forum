@@ -22,9 +22,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } else if (req.method === 'PUT') {
     try {
-        // Extract updates from the body
         const { updates } = req.body;
-        // Update the thread with the new values
+
         const thread = await Thread.findByIdAndUpdate(id, updates, { new: true });
         if (!thread) {
             res.status(404).json({ message: 'Thread not found' });

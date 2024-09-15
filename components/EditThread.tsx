@@ -35,21 +35,16 @@ function EditThread({
 
   const handleSave = async () => {
     if (!user) {
-      console.error('User is not authenticated');
+      console.error('User is not authenticated')
       return;
     }
-
-    const updatedData = { userId: user.id, updates: { title, description } };
-    console.log('Updating thread with ID:', thread._id);
-    console.log('Updated data:', updatedData);
-
-
+    const updatedData = { userId: user.id, updates: { title, description } }
 
     try {
       const response = await fetch(`/api/threads/${thread._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, updates: { title, description } }), // Use user.id safely
+        body: JSON.stringify({ userId: user.id, updates: { title, description } }), 
       });
       
       if (!response.ok) {
@@ -67,7 +62,7 @@ function EditThread({
   
 
   if (!canEdit || !isEditing) {
-    return <></>; // Return an empty fragment instead of null
+    return <></>
   }
 
   return (
@@ -96,8 +91,7 @@ function EditThread({
           </button>
           <button
             onClick={() => setIsEditing(false)}
-            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
-          >
+            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">
             <X className="w-4 h-4 mr-2" />
             Avbryt
           </button>
