@@ -34,23 +34,16 @@ function EditThread({
   const canEdit = thread.username === userUsername || (isUser(user) && user.publicMetadata?.isModerator)
 
   const handleSave = async () => {
-    if (!user) {
-      console.error('User is not authenticated')
-      return;
-    }
-    const updatedData = { userId: user.id, updates: { title, description } }
-
+    const updatedThread = { ...thread, title, description }
     try {
       const response = await fetch(`/api/threads/${thread._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id, updates: { title, description } }), 
+        body: JSON.stringify({ title, description }),
       });
-      
       if (!response.ok) {
         throw new Error('Failed to update thread');
       }
-      
       const updatedThreadFromServer = await response.json();
       onUpdateThread(updatedThreadFromServer);
       setIsEditing(false);
@@ -59,10 +52,8 @@ function EditThread({
     }
   }
 
-  
-
   if (!canEdit || !isEditing) {
-    return <></>
+    return <></>; // Return an empty fragment instead of null
   }
 
   return (
@@ -91,7 +82,8 @@ function EditThread({
           </button>
           <button
             onClick={() => setIsEditing(false)}
-            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">
+            className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+          >
             <X className="w-4 h-4 mr-2" />
             Avbryt
           </button>

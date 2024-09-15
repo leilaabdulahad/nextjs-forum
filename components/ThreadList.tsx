@@ -59,8 +59,7 @@ const ThreadList = ({ threads, onToggleLock }: ThreadListProps): JSX.Element => 
                       thread.isLocked 
                         ? 'bg-red-100 text-red-700 hover:bg-red-200' 
                         : 'bg-green-100 text-green-700 hover:bg-green-200'
-                    }`}
-                  >
+                    }`}>
                     {thread.isLocked ? 'Lås upp' : 'Lås tråden'}
                   </button>
                 )}

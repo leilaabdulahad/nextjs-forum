@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import dbConnect from '../../../lib/dbConnect';
-import Thread from '../../../models/Thread';
+import dbConnect from '@/lib/dbConnect';
+import Thread from '@/models/Thread';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
