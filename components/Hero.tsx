@@ -44,7 +44,7 @@ const Hero = () => {
                 Logga in för att skapa tråd
               </button>
             )}
-            <button className=" skapa-btn font-semibold py-3 px-6 rounded-lg transition duration-300 bg-gray-300 hover:bg-purple-100 hover:shadow-md">
+            <button className="skapa-btn font-semibold py-3 px-6 rounded-lg transition duration-300 bg-gray-300 hover:bg-purple-100 hover:shadow-md">
               Utforska forum
             </button>
           </motion.div>
