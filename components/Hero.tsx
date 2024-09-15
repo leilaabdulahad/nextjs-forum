@@ -34,17 +34,17 @@ const Hero = () => {
           >
             {isSignedIn ? (
               <Link href='/create'>
-                <button className="font-semibold py-3 px-6 rounded-lg transition duration-300 bg-gray-300 hover:bg-purple-100 hover:shadow-md">
+                <button className="bg-hero-btns font-semibold py-3 px-6 rounded-lg transition duration-300 hover:bg-purple-100 hover:shadow-md">
                   Skapa ny tråd
                 </button>
               </Link>
             ) : (
-              <button className="flex items-center justify-center bg-transparent border-2 bg-gray-300 font-semibold py-3 px-6 rounded-lg hover:bg-white transition duration-300">
+              <button className="bg-hero-btns flex items-center justify-center bg-transparent border-2 font-semibold py-3 px-6 rounded-lg hover:bg-white transition duration-300">
                 <LogIn className="mr-2" size={20} />
                 Logga in för att skapa tråd
               </button>
             )}
-            <button className="font-semibold py-3 px-6 rounded-lg transition duration-300 bg-gray-300 hover:bg-purple-100 hover:shadow-md">
+            <button className="bg-hero-btns font-semibold py-3 px-6 rounded-lg transition duration-300 hover:bg-purple-100 hover:shadow-md">
               Utforska forum
             </button>
           </motion.div>
