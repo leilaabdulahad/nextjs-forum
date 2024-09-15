@@ -47,8 +47,6 @@ const Home = () => {
     }
   }, [isSignedIn, user])
 
-
-
   const toggleThreadLock = async (threadId: string) => {
     const thread = threads.find((thread) => thread._id === threadId)
     if (thread) {

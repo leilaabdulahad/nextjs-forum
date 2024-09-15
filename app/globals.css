@@ -5,7 +5,9 @@
 body{
   background-color: #F5FFFD;
 }
-
+.skapa-btn{
+  background-color: #FFE9C8;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
